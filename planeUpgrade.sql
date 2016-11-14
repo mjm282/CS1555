@@ -16,33 +16,35 @@ CREATE OR REPLACE TRIGGER planeUpgrade
 		--figures out what plane is being used for this flight
 		SELECT plane_type INTO old_plane_type
 		FROM Flight
-		WHERE :new.flight_number = Flight.flight_number;
-	
+		WHERE :new.flight_number = flight_number;
+		
 		--figures out the amount of seats already filled
 		SELECT COUNT(*) INTO seats_taken
-		FROM Reservation_details
+		FROM Reservation_details, Flight
 		WHERE :new.flight_number = Flight.flight_number;
 
 		--gets the capacity of the old plane
 		SELECT plane_capacity INTO old_plane_capacity
-		FROM Plane
-		WHERE :new.flight_number = Flight.flight_number;
+		FROM (
+			SELECT flight_number, plane_capacity
+			FROM Flight, Plane
+			WHERE Flight.plane_type = Plane.plane_type)
+		WHERE :new.flight_number = flight_number;
 
 		--if over capacity, change the plane type to the next largest
 		IF (seats_taken + 1) >= old_plane_capacity THEN
 			
 			--all plane types with a capacity higher than the old one, sorted ascending, picks the first one
-			SELECT * FROM( 
+			SELECT * INTO new_plane_type
+			FROM( 
 				SELECT plane_type
 				FROM Plane
-				GROUP BY plane_type
-				HAVING plane_capacity > old_plane_capacity
-				ORDER BY plane_capacity ASC;)
-			INTO new_plane_type
+				WHERE plane_capacity > old_plane_capacity
+				ORDER BY plane_capacity ASC)
 			WHERE ROWNUM = 1;
-
+			
 			--updates Flight with the new plane type
 			UPDATE Flight SET plane_type = new_plane_type WHERE :new.flight_number = Flight.flight_number;		
 		END IF;
-		END;
+	END;
 	/
