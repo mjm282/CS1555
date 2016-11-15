@@ -51,7 +51,12 @@ CREATE OR REPLACE TRIGGER adjustTicket
     FOR EACH ROW
     BEGIN
         update reservation
-        set cost = cost - :old.high_price + :new.high_price
+        set cost =  CASE WHEN isHighPrice(reservation_number) = 1 
+                    THEN
+                        cost - :old.high_price + :new.high_price
+                    ELSE 
+                        cost - :old.low_price + :new.high_price
+                    END
         where (reservation.start_city = :new.departure_city AND reservation.end_city = :new.arrival_city   AND reservation.ticketed = 'N')
             OR (reservation.start_city = :new.arrival_city   AND reservation.end_city = :new.departure_city AND reservation.ticketed = 'N' AND
                 isRoundTrip(reservation_number)=1)
