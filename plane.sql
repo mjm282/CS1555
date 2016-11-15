@@ -25,6 +25,6 @@ INSERT INTO Plane VALUES ('B777','Boeing',396,to_date('6/29/2011','MM/DD/YYYY'),
 INSERT INTO Plane VALUES ('B787','Boeing',440,to_date('8/8/2011','MM/DD/YYYY'),2008,'KLM');
 INSERT INTO Plane VALUES ('A300','Airbus',266,to_date('3/27/2012','MM/DD/YYYY'),2012,'UAE');
 INSERT INTO Plane VALUES ('A330','Airbus',400,to_date('10/2/2010','MM/DD/YYYY'),1999,'DAL');
-INSERT INTO Plane VALUES ('A380','Airbus',853,to_date('3/22/2012','MM/DD/YYYY'),1995,'RYR');
+INSERT INTO Plane VALUES ('A380','Airbus',853,to_date('3/22/2012','MM/DD/YYYY'),1995,'AFR');
 INSERT INTO Plane VALUES ('E195','Evektor',130,to_date('5/17/2010','MM/DD/YYYY'),1998,'UAL');
 INSERT INTO Plane VALUES ('A148','Antonov',89,to_date('5/5/2010','MM/DD/YYYY'),2001,'BAW');
