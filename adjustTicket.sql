@@ -17,22 +17,7 @@ CREATE OR REPLACE TRIGGER adjustTicket
 
         -- I'm a bit iffy on when to use high vs low
         UPDATE reservation 
-        CASE
-            WHEN
-                (SELECT to_char(flight_date,'MM/DD/YY') as tdate
-                 FROM reservation_details
-                 WHERE reservation_details.reservation_number = reservation.reservation_number AND
-                 leg = 0)
-                =
-                (SELECT to_char(flight_date, 'MM/DD/YY') as tdate
-                 FROM  reservation_details
-                 WHERE reservation_details.reservation_number = reservation.reservation_number AND
-                 leg = (SELECT max(leg) FROM reservation_details WHERE reservation_details.reservation_number = reservation.reservation_number)
-            THEN
-                SET cost = cost + hprice_change
-            ELSE
-                SET cost = cost + lprice_change
-        END
+        SET cost = cost + hprice_change
 
         WHERE start_city = :new.departure_city AND
               end_city   = :new.arrival_city AND
