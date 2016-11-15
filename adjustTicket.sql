@@ -6,9 +6,6 @@ CREATE OR REPLACE TRIGGER adjustTicket
     FOR EACH ROW
     BEGIN
 
-        dbms_output.put_line(:new.high_price);
-        dbms_output.put_line(:old.high_price);
-
         update reservation
         set cost = cost - :old.high_price + :new.high_price
         where (reservation.start_city = :new.departure_city AND reservation.end_city = :new.arrival_city   AND reservation.ticketed = 'N') OR
