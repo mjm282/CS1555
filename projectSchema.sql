@@ -67,6 +67,8 @@ CREATE TABLE Reservation(
 	cost int,
 	credit_card_num varchar(16),
 	reservation_date date,
+	start_city varchar(3),
+	end_city varchar(3),
 	ticketed varchar(1));
 
 CREATE TABLE Reservation_details(
@@ -84,7 +86,7 @@ ALTER TABLE Airline ADD
 	CONSTRAINT Airline_PK PRIMARY KEY (airline_id) INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Plane ADD
-	CONSTRAINT Plane_PK PRIMARY KEY (plane_type) INITIALLY DEFERRED DEFERRABLE;
+	CONSTRAINT Plane_PK PRIMARY KEY (plane_type, owner_id) INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Plane ADD
 	CONSTRAINT Plane_FK FOREIGN KEY (owner_id) REFERENCES Airline (airline_id) INITIALLY DEFERRED DEFERRABLE;
@@ -93,10 +95,10 @@ ALTER TABLE Flight ADD
 	CONSTRAINT Flight_PK PRIMARY KEY (flight_number) INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Flight ADD
-	CONSTRAINT Flight_FK1 FOREIGN KEY (plane_type) REFERENCES Plane (plane_type) INITIALLY DEFERRED DEFERRABLE;
+	CONSTRAINT Flight_FK1 FOREIGN KEY (plane_type, airline_id) REFERENCES Plane (plane_type, owner_id) INITIALLY DEFERRED DEFERRABLE;
 
-ALTER TABLE Flight ADD	
-	CONSTRAINT Flight_FK2 FOREIGN KEY (airline_id) REFERENCES Airline (airline_id) INITIALLY DEFERRED DEFERRABLE;
+--ALTER TABLE Flight ADD	
+--	CONSTRAINT Flight_FK2 FOREIGN KEY (airline_id) REFERENCES Airline (airline_id) INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Price ADD
 	CONSTRAINT Price_PK PRIMARY KEY (departure_city, arrival_city) INITIALLY DEFERRED DEFERRABLE;
