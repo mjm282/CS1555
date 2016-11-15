@@ -21,6 +21,28 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE FUNCTION isHighPrice(resnum in varchar) return number
+is 
+first varchar(8);
+last  varchar(8);
+BEGIN
+    SELECT to_char(flight_date, 'MMDDYYYY') into first
+    FROM reservation_details rd
+    WHERE rd.reservation_number = resnum AND
+          leg = 0;
+
+    SELECT to_char(flight_date, 'MMDDYYY') into last
+    FROM reservation_details rd
+    WHERE rd.reservation_number = resnum AND
+          rd.leg =(select max(leg) from reservation_details r WHERE r.reservation_number = resnum);
+
+    IF first = last
+    THEN return(1);
+    ELSE return(0);
+    END IF;
+END;
+/
+
 -- You should create a trigger, called adjustTicket, that adjusts the cost of a reservation when
 -- the price of one of its legs changes before the ticket is issued.
 
