@@ -67,6 +67,8 @@ CREATE TABLE Reservation(
 	cost int,
 	credit_card_num varchar(16),
 	reservation_date date,
+	start_city varchar(3),
+	end_city varchar(3),
 	ticketed varchar(1));
 
 CREATE TABLE Reservation_details(
@@ -84,7 +86,7 @@ ALTER TABLE Airline ADD
 	CONSTRAINT Airline_PK PRIMARY KEY (airline_id) INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Plane ADD
-	CONSTRAINT Plane_PK PRIMARY KEY (plane_type) INITIALLY DEFERRED DEFERRABLE;
+	CONSTRAINT Plane_PK PRIMARY KEY (plane_type, owner_id) INITIALLY DEFERRED DEFERRABLE;
 
 ALTER TABLE Plane ADD
 	CONSTRAINT Plane_FK FOREIGN KEY (owner_id) REFERENCES Airline (airline_id) INITIALLY DEFERRED DEFERRABLE;
