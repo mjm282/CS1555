@@ -4,26 +4,15 @@
 CREATE OR REPLACE TRIGGER adjustTicket
     AFTER UPDATE ON price
     FOR EACH ROW
-    DECLARE 
-        hprice_change int;
-        lprice_change int;
     BEGIN
-        -- finding the price differences 
-        SELECT :new.high_price - :old.high_price INTO hprice_change
-        FROM dual;
 
-        SELECT :new.low_price - :old.low_price INTO lprice_change
-        FROM dual;
+        dbms_output.put_line(:new.high_price);
+        dbms_output.put_line(:old.high_price);
 
-        -- I'm a bit iffy on when to use high vs low
-        UPDATE reservation 
-        
-        SET cost = cost + hprice_change
-        FROM reservation r
-        WHERE start_city = :new.departure_city AND
-              end_city   = :new.arrival_city AND
-              ticketed   = 'N';
-        dbms_output.putline(hprice_change);
+        update reservation
+        set cost = cost - :old.high_price + :new.high_price
+        where (reservation.start_city = :new.departure_city AND reservation.end_city = :new.arrival_city   AND reservation.ticketed = 'N') OR
+              (reservation.start_city = :new.arrival_city   AND reservation.end_city = :new.departure_city AND reservation.ticketed = 'N');
 
     END;
 /
