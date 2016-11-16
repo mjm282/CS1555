@@ -43,6 +43,32 @@ BEGIN
 END;
 /
 
+
+CREATE OR REPLACE FUNCTION firstAirline(resnum in varchar) return varchar
+is
+    air varchar(5);
+BEGIN
+    SELECT airline_id INTO air
+    FROM reservation_details rd JOIN flight f ON rd.flight_number = f.flight_number
+    WHERE rd.reservation_number = resnum AND
+    leg = 0;
+    return(air);
+END;
+/
+
+CREATE OR REPLACE FUNCTION lastAirline(resnum in varchar) return varchar
+is
+    air varchar(5);
+BEGIN
+    SELECT airline_id INTO air
+    FROM reservation_details rd JOIN flight f ON rd.flight_number = f.flight_number
+    WHERE rd.reservation_number = resnum AND
+    leg = (SELECT max(leg) from reservation_details r2 WHERE r2.reservation_number = resnum);
+    return(air);
+END;
+/
+
+
 -- You should create a trigger, called adjustTicket, that adjusts the cost of a reservation when
 -- the price of one of its legs changes before the ticket is issued.
 
@@ -57,9 +83,10 @@ CREATE OR REPLACE TRIGGER adjustTicket
                     ELSE 
                         cost - :old.low_price + :new.high_price
                     END
-        where (reservation.start_city = :new.departure_city AND reservation.end_city = :new.arrival_city   AND reservation.ticketed = 'N')
+        where (reservation.start_city = :new.departure_city AND reservation.end_city = :new.arrival_city   AND reservation.ticketed = 'N' AND 
+                firstAirline(reservation_number) = :new.airline_id)
             OR (reservation.start_city = :new.arrival_city   AND reservation.end_city = :new.departure_city AND reservation.ticketed = 'N' AND
-                isRoundTrip(reservation_number)=1)
+                isRoundTrip(reservation_number)=1 AND lastAirline(reservation_number)= :new.airline_id)
             ;
 
     END;
