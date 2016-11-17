@@ -1,6 +1,7 @@
 --CS1555 Project Phase 1 Schema
 --Matthew Melchert: mjm282
---Charles Mith: cas275
+--Charles Smith: cas275
+--Will
 
 
 --Drop all tables
