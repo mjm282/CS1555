@@ -1,0 +1,10 @@
+INSERT INTO Airline VALUES ('001','Ryanair','RYR',1984);
+INSERT INTO Airline VALUES ('002','easyJet','EZY',1995);
+INSERT INTO Airline VALUES ('003','Lufthansa','DLH',1953);
+INSERT INTO Airline VALUES ('004','Emirates','UAE',1985);
+INSERT INTO Airline VALUES ('005','British Airways','BAW',1974);
+INSERT INTO Airline VALUES ('006','Air France','AFR',1933);
+INSERT INTO Airline VALUES ('007','Turkish Airlines','THY',1933);
+INSERT INTO Airline VALUES ('008','KLM','KLM',1919);
+INSERT INTO Airline VALUES ('009','United Airlines','UAL',1926);
+INSERT INTO Airline VALUES ('010','Delta Air Lines','DAL',1924);
