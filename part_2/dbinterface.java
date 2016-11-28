@@ -16,6 +16,14 @@ public class dbinterface{
         "0: Buy ticket from existing reservation\n" +
         "q: Quit";
 
+    private static final String ADMIN_MENU = "1: Erase the database\n" +
+        "2: Load airline information\n" +
+        "3: Load schedule information\n" +
+        "4: Load pricing information\n" +
+        "5: Load plane information\n" +
+        "6: Generate passenger manifest for specific flight on given day\n" +
+        "q: Quit";
+
     public static void main(String[] args){
         System.out.println("hello world");
 
@@ -50,19 +58,75 @@ public class dbinterface{
         else{
             userInterface();
         }
+
+        //close the connection
+        System.out.println("closing connection to the db");
+        try{
+            connection.close();
+        }
+        catch(Exception e5){
+            System.out.println("could not close");
+        }
     }
 
 
     public static void adminInterface(){
+        
         System.out.println("~Admin menu~");
+        System.out.println(ADMIN_MENU);
+        
+        char in = 'z';
+        
         try{
-            connection.close();
+            in = (char) System.in.read();
+            while(in == '\n'){
+                in = (char) System.in.read();
+            }
         }
         catch(Exception e){
-            System.out.println("cannot close");
+            System.out.println("could not read");
         }
 
+        while(in!='q'){
+            if(in == '1'){
+
+            }
+            else if(in == '2'){
+
+            }
+            else if(in == '3'){
+
+            }
+            else if(in == '4'){
+
+            }
+            else if(in == '5'){
+
+            }
+            else if(in == '6'){
+
+            }
+            else if(in != 'q'){
+                System.out.println("invalid");
+            }
+
+            System.out.println(ADMIN_MENU);
+            try{
+                in = (char) System.in.read();
+                while(in == '\n'){
+                    in = (char) System.in.read();
+                }
+            }
+            catch(Exception e1){
+                System.out.println("could not read");
+                in = 'z';
+            }
+
+        }
+        
     }
+
+
     public static void userInterface(){
         System.out.println("User menu");
         System.out.println(USER_MENU);
@@ -127,13 +191,6 @@ public class dbinterface{
         }
         System.out.println("quitting");
 
-        //close connection
-        try{
-            connection.close();
-        }
-        catch(Exception e){
-            System.out.println("cannot close conneciton");
-        }
     }
 }
 
