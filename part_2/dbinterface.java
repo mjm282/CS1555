@@ -5,15 +5,16 @@ public class dbinterface{
     private static Connection connection;
     private static String uname, passwrd;
     private static final String USER_MENU = "1: Add customer\n" + 
-                                            "2: Show customer info, given customer name\n" +
-                                            "3: Find price for flights between two cities\n" +
-                                            "4: Find all routes between two cities\n" +
-                                            "5: Find all routes between two cities of a given airline\n" +
-                                            "6: Find all routes with available seats between two cities on given day\n" +
-                                            "7: For a given airline, find all routes with available seats between two cities on given day\n" +
-                                            "8: Add reservation\n" +
-                                            "9: Show reservation info, given reservation number\n" +
-                                            "0: Buy ticket from existing reservation\n";
+        "2: Show customer info, given customer name\n" +
+        "3: Find price for flights between two cities\n" +
+        "4: Find all routes between two cities\n" +
+        "5: Find all routes between two cities of a given airline\n" +
+        "6: Find all routes with available seats between two cities on given day\n" +
+        "7: For a given airline, find all routes with available seats between two cities on given day\n" +
+        "8: Add reservation\n" +
+        "9: Show reservation info, given reservation number\n" +
+        "0: Buy ticket from existing reservation\n" +
+        "q: Quit";
 
     public static void main(String[] args){
         System.out.println("hello world");
@@ -65,56 +66,73 @@ public class dbinterface{
     public static void userInterface(){
         System.out.println("User menu");
         System.out.println(USER_MENU);
-        
+
         char in = 'z';
         try{
             in = (char) System.in.read();
-            if(in == '\n'){
+            while(in == '\n'){
                 in = (char) System.in.read();
             }
         }
         catch(Exception e1){
             System.out.println("read error" + e1);
         }
-        if(in == '1'){
+        while(in != 'q'){
+            if(in == '1'){
 
-        }
-        else if(in == '2'){
+            }
+            else if(in == '2'){
 
-        }
-        else if(in == '3'){
+            }
+            else if(in == '3'){
 
-        }
-        else if(in == '4'){
+            }
+            else if(in == '4'){
 
-        }
-        else if(in == '5'){
+            }
+            else if(in == '5'){
 
-        }
-        else if(in == '6'){
+            }
+            else if(in == '6'){
 
-        }
-        else if(in == '7'){
+            }
+            else if(in == '7'){
 
-        }
-        else if(in == '8'){
+            }
+            else if(in == '8'){
 
-        }
-        else if(in == '9'){
+            }
+            else if(in == '9'){
 
-        }
-        else if(in == '0'){
+            }
+            else if(in == '0'){
 
+            }
+            else if(in != 'q'){
+                System.out.println("invalid");
+            }
+            //read input
+            System.out.println(USER_MENU);
+            try{
+                in = (char) System.in.read();
+                while(in == '\n'){
+                    in = (char) System.in.read();
+                }
+            }
+            catch(Exception e3){
+                System.out.println("cannot read");
+                in = 'z';
+            }
+            
         }
-        else{
-            System.out.println("invalid");
-        }
-        
+        System.out.println("quitting");
+
+        //close connection
         try{
             connection.close();
         }
         catch(Exception e){
-            System.out.println("cannot close");
+            System.out.println("cannot close conneciton");
         }
     }
 }
