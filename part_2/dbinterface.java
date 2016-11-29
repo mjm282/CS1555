@@ -106,7 +106,7 @@ public class dbinterface{
             if(in == '1')
 			{
 				try{
-				String[] tables = {"Airline", "Flight", "Plane", "Price", "Customer", "Reservation", "Reservation_details"};
+				String[] tables = {"Reservation_details",  "Reservation", "Customer", "Price", "Flight", "Plane", "Airline"};
 				statement = connection.createStatement();
 				String deleteQuery = "DELETE FROM ";
 				for(int i = 0; i < tables.length; i++)
@@ -161,12 +161,12 @@ public class dbinterface{
 						prepStatement.setString(1, lineSplit[0]);
 						prepStatement.setString(2, lineSplit[1]);
 						prepStatement.setString(3, lineSplit[2]);
-						prepStatement.setString(3, lineSplit[3]);
-						prepStatement.setString(4, lineSplit[4]);
-						prepStatement.setString(5, lineSplit[5]);
-						prepStatement.setString(6, lineSplit[6]);
-						prepStatement.setString(7, lineSplit[7]);
-						prepStatement.setString(8, lineSplit[8]);
+						prepStatement.setString(4, lineSplit[3]);
+						prepStatement.setString(5, lineSplit[4]);
+						prepStatement.setString(6, lineSplit[5]);
+						prepStatement.setString(7, lineSplit[6]);
+						prepStatement.setString(8, lineSplit[7]);
+			//			prepStatement.setString(8, lineSplit[8]);
 						
 						prepStatement.executeUpdate();
 					}
@@ -216,12 +216,16 @@ public class dbinterface{
 					String low = adminScan.next();
 					
 					query = "UPDATE Price SET high_price = ?, low_price = ? WHERE departure_city = ? AND arrival_city = ?";
+					
+					//System.out.println(query);
 					try{
 						prepStatement = connection.prepareStatement(query);
 						prepStatement.setInt(1, Integer.parseInt(high));
 						prepStatement.setInt(2, Integer.parseInt(low));
 						prepStatement.setString(3, depCity);
 						prepStatement.setString(4, arrCity);
+
+						prepStatement.executeUpdate();
 					}catch (Exception e){
 						System.out.println("Error: " + e.getMessage());
 						e.printStackTrace();
@@ -272,23 +276,17 @@ public class dbinterface{
 				String fNumber = adminScan.next();
 				String fDate = adminScan.next();
 				
-				query = "SELECT salutation, first_name, last_name"+
-						"FROM Customer"+
-						"WHERE cid IN("+
-							"SELECT cid FROM Reservation"+
-							"WHERE reservation_number IN ("+
-								"SELECT reservation_number"+
-								"FROM Reservation_details"+
-								"WHERE flight_number = ? AND flight_date = ?));";
+				query = "SELECT salutation, first_name, last_name FROM Customer WHERE cid IN( SELECT cid FROM Reservation WHERE reservation_number IN ( SELECT reservation_number FROM Reservation_details WHERE flight_number = ? AND flight_date = to_date(?, 'MM/DD/YYYY')))";
+				// query = "SELECT salutation, first_name, last_name FROM Customer WHERE cid IN( SELECT cid FROM Reservation WHERE reservation_number IN ( SELECT reservation_number FROM Reservation_details WHERE flight_number = ? AND flight_date = ?))";
 					try{
 						prepStatement = connection.prepareStatement(query);
 						prepStatement.setString(1, fNumber);
 						java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
-						java.sql.Date date = new java.sql.Date (df.parse(fDate).getTime());
-						prepStatement.setDate(2, date);
+						java.sql.Date datef = new java.sql.Date (df.parse(fDate).getTime());
+						prepStatement.setString(2, fDate);
+						// prepStatement.setDate(2, datef);
 						
 						resultSet = prepStatement.executeQuery();
-						
 						while (resultSet.next())
 						{
 							System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
