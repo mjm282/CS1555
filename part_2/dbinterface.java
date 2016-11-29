@@ -174,7 +174,7 @@ public class dbinterface{
                 if (!rs.next()){
                     print("Sorry, that user already exists in the system.");
 
-                }z
+                }
             }
             else if(in == '2'){
 
