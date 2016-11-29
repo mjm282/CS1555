@@ -255,7 +255,7 @@ public class dbinterface{
         }
         while(in != 'q'){
             if(in == '1'){
-                try {
+                try { 
                     System.out.println("Create New User");
                     System.out.print("Please enter a salutation: ");
                     String salutation = scan.next();
@@ -283,28 +283,28 @@ public class dbinterface{
                     checkcust.setString(1,fname);
                     checkcust.setString(2,lname);
                     ResultSet rs = checkcust.executeQuery();
-                    if (!rs.next()){
+                    if (rs.next()){ // if we got a result, then someone is already in the db
                         System.out.println("Sorry, that user already exists in the system.");
                         
                     }
                     else{
                         
-                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
                         PreparedStatement putCust = connection.prepareStatement(insCust);
                         Random rand = new Random();
-                        int n = rand.nextInt(999999999) + 100000000;
+                        int n = rand.nextInt(99999999) + 10000000;
                         String cid = Integer.toString(n);
                         putCust.setString(1, cid);
                         putCust.setString(2, salutation);
                         putCust.setString(3, fname);
                         putCust.setString(4, lname);
-                        putCust.setString(5, street);
-                        putCust.setString(6, city);
-                        putCust.setString(7, state);
-                        putCust.setString(8, pn);
-                        putCust.setString(9, email);
-                        putCust.setString(10, cc);
-                        putCust.setString(11, expdate);
+                        putCust.setString(5, cc);
+                        putCust.setString(6, expdate);
+                        putCust.setString(7, street);
+                        putCust.setString(8, city);
+                        putCust.setString(9, state);
+                        putCust.setString(10, pn);
+                        putCust.setString(11, email);
                         putCust.executeUpdate();
                     }
                 } catch (SQLException ex) {
