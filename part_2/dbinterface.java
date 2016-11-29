@@ -395,10 +395,39 @@ public class dbinterface{
 
             }
             else if(in == '9'){
-
+                try {
+                    System.out.println("Find Reservation Info:");
+                    System.out.print("Please enter reservation number: ");
+                    String resnum = scan.next();
+                    String resquery = "SELECT * FROM Reservation_details WHERE reservation_number = ?";
+                    PreparedStatement findlegs = connection.prepareStatement(resquery);
+                    findlegs.setString(1, resnum);
+                    ResultSet rs = findlegs.executeQuery();
+                    if(!rs.next()){
+                        System.out.println("Sorry, that wasn't a valid reservation number.");
+                    }
+                    else{
+                        while(rs.next()){
+                            System.out.println(rs);
+                        
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             else if(in == '0'){
-
+                try {
+                    System.out.println("Ticket Reservation:");
+                    System.out.print("Please enter reservation number: ");
+                    String resnum = scan.next();
+                    String resquery = "UPDATE Reservation SET tickted = 1 WHERE reservation_number = ?";
+                    PreparedStatement updateRes = connection.prepareStatement(resquery);
+                    updateRes.setString(1,resnum);
+                    updateRes.executeUpdate();
+                } catch (SQLException ex) {
+                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             else if(in != 'q'){
                 System.out.println("invalid");
