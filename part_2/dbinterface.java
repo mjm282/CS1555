@@ -509,7 +509,40 @@ public class dbinterface{
                 
             }
             else if(in == '5'){
-
+                try {
+                    //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
+                    System.out.println("Find Routes");
+                    System.out.print("Please enter origin city: ");
+                    String origin = scan.next();
+                    System.out.print("Please enter destination city: ");
+                    String dest = scan.next();
+                    System.out.print("Please enter airline: ");
+                    String airline = scan.next();
+                    String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
+                    PreparedStatement findDirect = connection.prepareStatement(directQuery);
+                    findDirect.setString(1,origin);
+                    findDirect.setString(2,dest);
+                    findDirect.setString(3,airline);
+                    ResultSet rs = findDirect.executeQuery();
+                    while(rs.next()){
+                        System.out.println(rs);
+                    }
+                    String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND airline_id = ?";
+                    PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
+                    findIndirect.setString(1, origin);
+                    findIndirect.setString(2, dest);
+                    findIndirect.setString(3, airline);
+                    rs = findIndirect.executeQuery();
+                    while(rs.next()){
+                        System.out.println(rs);
+                    }
+                
+                } catch (SQLException ex) {
+                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                    
+                
+            }
             }
             else if(in == '6'){
 
