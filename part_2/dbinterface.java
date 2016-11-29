@@ -1,9 +1,14 @@
 import java.sql.*;
 import java.io.*;
+import java.util.*;
 public class dbinterface{
 
     private static Connection connection;
     private static String uname, passwrd;
+	private static String query; //currently being used query
+	private static Statement statement;
+	private static PreparedStatement prepStatement;
+	private static ResultSet resultSet;
     private static final String USER_MENU = "1: Add customer\n" + 
         "2: Show customer info, given customer name\n" +
         "3: Find price for flights between two cities\n" +
@@ -69,7 +74,14 @@ public class dbinterface{
         }
     }
 
-
+// private static final String ADMIN_MENU = "1: Erase the database\n" +
+        // "2: Load airline information\n" +
+        // "3: Load schedule information\n" +
+        // "4: Load pricing information\n" +
+        // "5: Load plane information\n" +
+        // "6: Generate passenger manifest for specific flight on given day\n" +
+        // "q: Quit";
+	
     public static void adminInterface(){
         
         System.out.println("~Admin menu~");
@@ -88,25 +100,121 @@ public class dbinterface{
         }
 
         while(in!='q'){
-            if(in == '1'){
+			Scanner adminScan = new Scanner(System.in);
+            if(in == '1')
+			{
+				try{
+				String[] tables = {"Airline", "Flight", "Plane", "Price", "Customer", "Reservation", "Reservation_details"};
+				statement = connection.createStatement();
+				String deleteQuery = "DELETE FROM ";
+				for(int i = 0; i < tables.length; i++)
+				{
+					statement.executeQuery(deleteQuery + tables[i]);
+				}
+				}catch(Exception e)
+				{
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+				
+            }
+            else if(in == '2') //insert airline data
+			{
+				System.out.println("Please enter full path to airline data file");
+				String airFile = adminScan.next();
+				query = "INSERT INTO Airline VALUES (?,?,?,?)";
+				String line;
+				String[] lineSplit;
+				try{
+					BufferedReader read = new BufferedReader(new FileReader(airFile));
+					prepStatement = connection.prepareStatement(query);
+					while((line = read.readLine()) != null)
+					{
+						lineSplit = line.split(" ");
+						prepStatement.setString(1, lineSplit[0]);
+						prepStatement.setString(2, lineSplit[1]);
+						prepStatement.setString(3, lineSplit[2]);
+						prepStatement.setInt(4, Integer.parseInt(lineSplit[3]));
+						
+						prepStatement.executeUpdate();
+					}
+				}catch (Exception e){
+					System.out.println("Error: " + e.getMessage());
+					e.printStackTrace();
+				}
+            }
+            else if(in == '3') //insert flight data
+			{
+				System.out.println("Please enter full path to scheduling data file");
+				String airFile = adminScan.next();
+				query = "INSERT INTO Flight VALUES (?,?,?,?,?,?,?,?)";
+				String line;
+				String[] lineSplit;
+				try{
+					BufferedReader read = new BufferedReader(new FileReader(airFile));
+					while((line = read.readLine()) != null)
+					{
+						lineSplit = line.split(" ");
+						prepStatement = connection.prepareStatement(query);
+						prepStatement.setString(1, lineSplit[0]);
+						prepStatement.setString(2, lineSplit[1]);
+						prepStatement.setString(3, lineSplit[2]);
+						prepStatement.setString(3, lineSplit[3]);
+						prepStatement.setString(4, lineSplit[4]);
+						prepStatement.setString(5, lineSplit[5]);
+						prepStatement.setString(6, lineSplit[6]);
+						prepStatement.setString(7, lineSplit[7]);
+						prepStatement.setString(8, lineSplit[8]);
+						
+						prepStatement.executeUpdate();
+					}
+				}catch (Exception e){
+					System.out.println("Error: " + e.getMessage());
+					e.printStackTrace();
+				}
+            }
+            else if(in == '4')
+			{
 
             }
-            else if(in == '2'){
+            else if(in == '5') //insert plane data
+			{
+				System.out.println("Please enter full path to plane data file");
+				String airFile = adminScan.next();
+				query = "INSERT INTO Plane VALUES (?,?,?,?,?,?)";
+				String line;
+				String[] lineSplit;
+				
+				java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
+				
+				try{
+					BufferedReader read = new BufferedReader(new FileReader(airFile));
+					while((line = read.readLine()) != null)
+					{
+						lineSplit = line.split(" ");
+						
+						prepStatement = connection.prepareStatement(query);
+						prepStatement.setString(1, lineSplit[0]);
+						prepStatement.setString(2, lineSplit[1]);
+						prepStatement.setInt(3, Integer.parseInt(lineSplit[2]));
+						java.sql.Date date = new java.sql.Date (df.parse(lineSplit[3]).getTime());
+						prepStatement.setDate(4, date);
+						prepStatement.setInt(5, Integer.parseInt(lineSplit[4]));
+						prepStatement.setString(6, lineSplit[5]);
+						
+						prepStatement.executeUpdate();
+					}
+				}catch (Exception e){
+					System.out.println("Error: " + e.getMessage());
+					e.printStackTrace();
+				}
+            }
+            else if(in == '6')
+			{
 
             }
-            else if(in == '3'){
-
-            }
-            else if(in == '4'){
-
-            }
-            else if(in == '5'){
-
-            }
-            else if(in == '6'){
-
-            }
-            else if(in != 'q'){
+            else if(in != 'q')
+			{
                 System.out.println("invalid");
             }
 
