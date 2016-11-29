@@ -336,57 +336,60 @@ public class dbinterface{
             System.out.println("read error" + e1);
         }
         while(in != 'q'){
+            if(scan.hasNextLine()){
+                scan.nextLine();
+            }
             if(in == '1'){
-                try {
+                try { 
                     System.out.println("Create New User");
                     System.out.print("Please enter a salutation: ");
-                    String salutation = scan.next();
+                    String salutation = scan.nextLine();
                     System.out.print("Please enter first name: ");
-                    String fname = scan.next();
+                    String fname = scan.nextLine();
                     System.out.print("Please enter last name: ");
-                    String lname = scan.next();
+                    String lname = scan.nextLine();
                     System.out.print("Please enter street name: ");
-                    String street = scan.next();
+                    String street = scan.nextLine();
                     System.out.print("Please enter city name: ");
-                    String city = scan.next();
+                    String city = scan.nextLine();
                     System.out.print("Please enter state abbreviation: ");
-                    String state = scan.next();
+                    String state = scan.nextLine();
                     System.out.print("Please enter phone number: ");
-                    String pn = scan.next();
+                    String pn = scan.nextLine();
                     System.out.print("Please enter email address: ");
-                    String email = scan.next();
+                    String email = scan.nextLine();
                     System.out.print("Please enter credit card number: ");
-                    String cc = scan.next();
+                    String cc = scan.nextLine();
                     System.out.print("Please enter card expiration date: ");
-                    String expdate = scan.next();
+                    String expdate = scan.nextLine();
                     
                     String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
                     PreparedStatement checkcust = connection.prepareStatement(findCust);
                     checkcust.setString(1,fname);
                     checkcust.setString(2,lname);
                     ResultSet rs = checkcust.executeQuery();
-                    if (!rs.next()){
+                    if (rs.next()){ // if we got a result, then someone is already in the db
                         System.out.println("Sorry, that user already exists in the system.");
                         
                     }
                     else{
                         
-                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
                         PreparedStatement putCust = connection.prepareStatement(insCust);
                         Random rand = new Random();
-                        int n = rand.nextInt(999999999) + 100000000;
+                        int n = rand.nextInt(99999999) + 10000000;
                         String cid = Integer.toString(n);
                         putCust.setString(1, cid);
                         putCust.setString(2, salutation);
                         putCust.setString(3, fname);
                         putCust.setString(4, lname);
-                        putCust.setString(5, street);
-                        putCust.setString(6, city);
-                        putCust.setString(7, state);
-                        putCust.setString(8, pn);
-                        putCust.setString(9, email);
-                        putCust.setString(10, cc);
-                        putCust.setString(11, expdate);
+                        putCust.setString(5, cc);
+                        putCust.setString(6, expdate);
+                        putCust.setString(7, street);
+                        putCust.setString(8, city);
+                        putCust.setString(9, state);
+                        putCust.setString(10, pn);
+                        putCust.setString(11, email);
                         putCust.executeUpdate();
                     }
                 } catch (SQLException ex) {
@@ -398,16 +401,29 @@ public class dbinterface{
                 try {
                     System.out.println("Find User Information");
                     System.out.print("Please enter first name: ");
-                    String fname = scan.next();
+                    String fname = scan.nextLine();
                     System.out.print("Please enter last name: ");
-                    String lname = scan.next();
+                    String lname = scan.nextLine();
                     String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
                     PreparedStatement checkcust = connection.prepareStatement(findCust);
                     checkcust.setString(1, fname);
                     checkcust.setString(2, lname);
                     ResultSet rs = checkcust.executeQuery();
                     if (rs.next()){
-                        System.out.println("We should complete this function.");
+                        System.out.println(rs.getString(1) + " " 
+                                            + rs.getString(2) + " "
+                                            + rs.getString(3) + " "
+                                            + rs.getString(4) + " "
+                                            + rs.getString(5) + " "
+                                            + rs.getDate(6)   + " "
+                                            + rs.getString(7) + " "
+                                            + rs.getString(8) + " "
+                                            + rs.getString(9) + " "
+                                            + rs.getString(10)+ " "
+                                            + rs.getString(11));
+                    }
+                    else{
+                        System.out.println("not found");
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
@@ -427,10 +443,12 @@ public class dbinterface{
                     getPrice.setString(1, origin);
                     getPrice.setString(2, dest);
                     ResultSet rs = getPrice.executeQuery();
-                    String high_price_to = "";
-                    String high_price_from = "";
-                    String low_price_to = "";
-                    String low_price_from = "";
+                    String high_price_to = "0";
+                    String high_price_from = "0";
+                    String low_price_to = "0";
+                    String low_price_from = "0";
+                    boolean to = false;
+                    boolean from = false;
                     String output = "";
                     while(rs.next()){
                         high_price_to = rs.getString("high_price");
@@ -438,6 +456,8 @@ public class dbinterface{
                         output = String.format("The high cost from %s to %s is %s", origin, dest, high_price_to);
                         System.out.println(output);
                         output = String.format("The low cost from %s to %s is %s", origin, dest, low_price_to);
+                        System.out.println(output);
+                        to = true;
                     }
                     getPrice = connection.prepareStatement(findprice);
                     getPrice.setString(1, dest);
@@ -449,12 +469,17 @@ public class dbinterface{
                         output = String.format("The high cost from %s to %s is %s", dest, origin, high_price_from);
                         System.out.println(output);
                         output = String.format("The low cost from %s to %s is %s", dest, origin, low_price_from);
+                        System.out.println(output);
+                        from = true;
                     }
-                    int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
-                    int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
-                    output = String.format("The high price for a round trip from %s to %s is %d",origin,dest,high_round);
-                    System.out.println(output);
-                    output = String.format("The low price for a round trip from %s to %s is %d",origin,dest,low_round);
+                    if(to && from){
+                        int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
+                        int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
+                        output = String.format("The high price for a round trip from %s to %s is %d",origin,dest,high_round);
+                        System.out.println(output);
+                        output = String.format("The low price for a round trip from %s to %s is %d",origin,dest,low_round);
+                        System.out.println(output);
+                    }
                     
                 } catch (SQLException ex) {
                     Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
