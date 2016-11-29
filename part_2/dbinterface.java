@@ -236,6 +236,7 @@ public class dbinterface{
 
 
     public static void userInterface(){
+        Scanner scan = new Scanner(System.in);
         System.out.println("User menu");
         System.out.println(USER_MENU);
 
@@ -251,9 +252,70 @@ public class dbinterface{
         }
         while(in != 'q'){
             if(in == '1'){
+                System.out.println("Create New User");
+                System.out.print("Please enter a salutation: ");
+                String salutation = scan.next();
+                System.out.print("Please enter first name: ");
+                String fname = scan.next();
+                System.out.print("Please enter last name: ");
+                String lname = scan.next();
+                System.out.print("Please enter street name: ");
+                String street = scan.next();
+                System.out.print("Please enter city name: ");
+                String city = scan.next();
+                System.out.print("Please enter state abbreviation: ");
+                String state = scan.next();
+                System.out.print("Please enter phone number: ");
+                String pn = scan.next();
+                System.out.print("Please enter email address: ");
+                String email = scan.next();
+                System.out.print("Please enter credit card number: ");
+                String cc = scan.next();
+                System.out.print("Please enter card expiration date: ");
+                String expdate = scan.next();
 
+                String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
+                PreparedStatement checkcust = connection.prepareStatement(findCust);
+                checkcust.setString(1,fname);
+                checkcust.setString(2,lname);
+                ResultSet rs = checkcust.executeQuery();
+                if (!rs.next()){
+                    print("Sorry, that user already exists in the system.");
+
+                }
+                else{
+
+                    String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                    PreparedStatement putCust = connection.prepareStatement(insCust);
+                    Random rand = new Random();
+                    int n rand.nextInt(999999999) + 100000000;
+                    String cid = Integer.toString(n);
+                    putCust.setString(1, cid);
+                    putCust.setString(2, salutation);
+                    putCust.setString(3, fname);
+                    putCust.setString(4, lname);
+                    putCust.setString(5, street);
+                    putCust.setString(6, city);
+                    putCust.setString(7, state);
+                    putCust.setString(8, pn);
+                    putCust.setString(9, email);
+                    putCust.setString(10, cc);
+                    putCust.setString(11, expdate);
+                    putCust.executeUpdate();
+                }
             }
             else if(in == '2'){
+                System.out.println("Find User Information");
+                System.out.print("Please enter first name: ");
+                String fname = scan.next();
+                System.out.print("Please enter last name: ");
+                String lname = scan.next();
+                String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
+                PreparedStatement checkcust = connection.prepareStatement(findCust);
+                ResultSet rs = checkcust.executeQuery();
+                if (rs.next()){
+                    System.out.println("We should complete this function.")j
+                }
 
             }
             else if(in == '3'){
