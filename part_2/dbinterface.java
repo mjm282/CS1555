@@ -421,6 +421,9 @@ public class dbinterface{
                                             + rs.getString(10)+ " "
                                             + rs.getString(11));
                     }
+                    else{
+                        System.out.println("not found");
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
                 }
