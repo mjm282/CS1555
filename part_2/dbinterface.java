@@ -154,10 +154,10 @@ public class dbinterface{
 				String[] lineSplit;
 				try{
 					BufferedReader read = new BufferedReader(new FileReader(airFile));
+					prepStatement = connection.prepareStatement(query);
 					while((line = read.readLine()) != null)
 					{
 						lineSplit = line.split(" ");
-						prepStatement = connection.prepareStatement(query);
 						prepStatement.setString(1, lineSplit[0]);
 						prepStatement.setString(2, lineSplit[1]);
 						prepStatement.setString(3, lineSplit[2]);
@@ -177,7 +177,62 @@ public class dbinterface{
             }
             else if(in == '4')
 			{
-
+				System.out.println("Do you want to: \n" +
+				"L: Load pricing information\n" +
+				"C: Change the price of an existing fight");
+				String priceChoice = adminScan.next();
+				if(priceChoice.equals("L"))
+				{
+					System.out.println("Please enter full path to pricing information");
+					String priceFile = adminScan.next();
+					query = "INSERT INTO Price VALUES (?,?,?,?,?)";
+					String line;
+					String[] lineSplit;
+					try{
+						BufferedReader read = new BufferedReader(new FileReader(priceFile));
+						prepStatement = connection.prepareStatement(query);
+						while((line = read.readLine()) != null)
+						{
+							lineSplit = line.split(" ");
+							prepStatement.setString(1, lineSplit[0]);
+							prepStatement.setString(2, lineSplit[1]);
+							prepStatement.setString(3, lineSplit[2]);
+							prepStatement.setInt(4, Integer.parseInt(lineSplit[3]));
+							prepStatement.setInt(5, Integer.parseInt(lineSplit[4]));
+							
+							prepStatement.executeUpdate();
+						}
+					}catch (Exception e){
+							System.out.println("Error: " + e.getMessage());
+							e.printStackTrace();
+					}
+				}
+				else if(priceChoice.equals("C"))
+				{
+					System.out.println("Please enter departure city, arrival city, high price, and low price separated by spaces");
+					String depCity = adminScan.next();
+					String arrCity = adminScan.next();
+					String high = adminScan.next();
+					String low = adminScan.next();
+					
+					query = "UPDATE Price SET high_price = ?, low_price = ? WHERE departure_city = ? AND arrival_city = ?";
+					try{
+						prepStatement = connection.prepareStatement(query);
+						prepStatement.setInt(1, Integer.parseInt(high));
+						prepStatement.setInt(2, Integer.parseInt(low));
+						prepStatement.setString(3, depCity);
+						prepStatement.setString(4, arrCity);
+					}catch (Exception e){
+						System.out.println("Error: " + e.getMessage());
+						e.printStackTrace();
+					}
+					
+				}
+				else
+				{
+					System.out.println("Invalid");
+				}
+				
             }
             else if(in == '5') //insert plane data
 			{
@@ -191,11 +246,11 @@ public class dbinterface{
 				
 				try{
 					BufferedReader read = new BufferedReader(new FileReader(airFile));
+					prepStatement = connection.prepareStatement(query);
 					while((line = read.readLine()) != null)
 					{
 						lineSplit = line.split(" ");
 						
-						prepStatement = connection.prepareStatement(query);
 						prepStatement.setString(1, lineSplit[0]);
 						prepStatement.setString(2, lineSplit[1]);
 						prepStatement.setInt(3, Integer.parseInt(lineSplit[2]));
@@ -213,7 +268,36 @@ public class dbinterface{
             }
             else if(in == '6')
 			{
-
+				System.out.println("Please enter flight number and date, separated by spaces");
+				String fNumber = adminScan.next();
+				String fDate = adminScan.next();
+				
+				query = "SELECT salutation, first_name, last_name"+
+						"FROM Customer"+
+						"WHERE cid IN("+
+							"SELECT cid FROM Reservation"+
+							"WHERE reservation_number IN ("+
+								"SELECT reservation_number"+
+								"FROM Reservation_details"+
+								"WHERE flight_number = ? AND flight_date = ?));";
+					try{
+						prepStatement = connection.prepareStatement(query);
+						prepStatement.setString(1, fNumber);
+						java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
+						java.sql.Date date = new java.sql.Date (df.parse(fDate).getTime());
+						prepStatement.setDate(2, date);
+						
+						resultSet = prepStatement.executeQuery();
+						
+						while (resultSet.next())
+						{
+							System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+						}
+						
+					}catch (Exception e){
+						System.out.println("Error: " + e.getMessage());
+						e.printStackTrace();
+					}
             }
             else if(in != 'q')
 			{
@@ -255,7 +339,7 @@ public class dbinterface{
         }
         while(in != 'q'){
             if(in == '1'){
-                try {
+                try { 
                     System.out.println("Create New User");
                     System.out.print("Please enter a salutation: ");
                     String salutation = scan.next();
@@ -283,28 +367,28 @@ public class dbinterface{
                     checkcust.setString(1,fname);
                     checkcust.setString(2,lname);
                     ResultSet rs = checkcust.executeQuery();
-                    if (!rs.next()){
+                    if (rs.next()){ // if we got a result, then someone is already in the db
                         System.out.println("Sorry, that user already exists in the system.");
                         
                     }
                     else{
                         
-                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
                         PreparedStatement putCust = connection.prepareStatement(insCust);
                         Random rand = new Random();
-                        int n = rand.nextInt(999999999) + 100000000;
+                        int n = rand.nextInt(99999999) + 10000000;
                         String cid = Integer.toString(n);
                         putCust.setString(1, cid);
                         putCust.setString(2, salutation);
                         putCust.setString(3, fname);
                         putCust.setString(4, lname);
-                        putCust.setString(5, street);
-                        putCust.setString(6, city);
-                        putCust.setString(7, state);
-                        putCust.setString(8, pn);
-                        putCust.setString(9, email);
-                        putCust.setString(10, cc);
-                        putCust.setString(11, expdate);
+                        putCust.setString(5, cc);
+                        putCust.setString(6, expdate);
+                        putCust.setString(7, street);
+                        putCust.setString(8, city);
+                        putCust.setString(9, state);
+                        putCust.setString(10, pn);
+                        putCust.setString(11, email);
                         putCust.executeUpdate();
                     }
                 } catch (SQLException ex) {
@@ -325,7 +409,20 @@ public class dbinterface{
                     checkcust.setString(2, lname);
                     ResultSet rs = checkcust.executeQuery();
                     if (rs.next()){
-                        System.out.println("We should complete this function.");
+                        System.out.println(rs.getString(1) + " " 
+                                            + rs.getString(2) + " "
+                                            + rs.getString(3) + " "
+                                            + rs.getString(4) + " "
+                                            + rs.getString(5) + " "
+                                            + rs.getDate(6)   + " "
+                                            + rs.getString(7) + " "
+                                            + rs.getString(8) + " "
+                                            + rs.getString(9) + " "
+                                            + rs.getString(10)+ " "
+                                            + rs.getString(11));
+                    }
+                    else{
+                        System.out.println("not found");
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
