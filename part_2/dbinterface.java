@@ -338,29 +338,32 @@ public class dbinterface{
             System.out.println("read error" + e1);
         }
         while(in != 'q'){
+            if(scan.hasNextLine()){
+                scan.nextLine();
+            }
             if(in == '1'){
                 try { 
                     System.out.println("Create New User");
                     System.out.print("Please enter a salutation: ");
-                    String salutation = scan.next();
+                    String salutation = scan.nextLine();
                     System.out.print("Please enter first name: ");
-                    String fname = scan.next();
+                    String fname = scan.nextLine();
                     System.out.print("Please enter last name: ");
-                    String lname = scan.next();
+                    String lname = scan.nextLine();
                     System.out.print("Please enter street name: ");
-                    String street = scan.next();
+                    String street = scan.nextLine();
                     System.out.print("Please enter city name: ");
-                    String city = scan.next();
+                    String city = scan.nextLine();
                     System.out.print("Please enter state abbreviation: ");
-                    String state = scan.next();
+                    String state = scan.nextLine();
                     System.out.print("Please enter phone number: ");
-                    String pn = scan.next();
+                    String pn = scan.nextLine();
                     System.out.print("Please enter email address: ");
-                    String email = scan.next();
+                    String email = scan.nextLine();
                     System.out.print("Please enter credit card number: ");
-                    String cc = scan.next();
+                    String cc = scan.nextLine();
                     System.out.print("Please enter card expiration date: ");
-                    String expdate = scan.next();
+                    String expdate = scan.nextLine();
                     
                     String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
                     PreparedStatement checkcust = connection.prepareStatement(findCust);
@@ -400,9 +403,9 @@ public class dbinterface{
                 try {
                     System.out.println("Find User Information");
                     System.out.print("Please enter first name: ");
-                    String fname = scan.next();
+                    String fname = scan.nextLine();
                     System.out.print("Please enter last name: ");
-                    String lname = scan.next();
+                    String lname = scan.nextLine();
                     String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
                     PreparedStatement checkcust = connection.prepareStatement(findCust);
                     checkcust.setString(1, fname);
