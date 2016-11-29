@@ -36,8 +36,8 @@ public class dbinterface{
 
 
         // change this if you're debuging 
-        uname = "mjm282";
-        passwrd = "3841208";
+        uname = "cas275";
+        passwrd = "pitt1787";
 
         try{
             System.out.println("Connecting . . .");
