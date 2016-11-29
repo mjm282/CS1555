@@ -128,6 +128,7 @@ public class dbinterface{
 
 
     public static void userInterface(){
+        Scanner scan = new Scanner(System.in);
         System.out.println("User menu");
         System.out.println(USER_MENU);
 
@@ -143,7 +144,37 @@ public class dbinterface{
         }
         while(in != 'q'){
             if(in == '1'){
+                System.out.println("Create New User");
+                System.out.print("Please enter a salutation: ");
+                String salutation = scan.next();
+                System.out.print("Please enter first name: ");
+                String fname = scan.next();
+                System.out.print("Please enter last name: ");
+                String lname = scan.next();
+                System.out.print("Please enter street name: ");
+                String street = scan.next();
+                System.out.print("Please enter city name: ");
+                String city = scan.next();
+                System.out.print("Please enter state abbreviation: ");
+                String state = scan.next();
+                System.out.print("Please enter phone number: ");
+                String pn = scan.next();
+                System.out.print("Please enter email address: ");
+                String email = scan.next();
+                System.out.print("Please enter credit card number: ");
+                String cc = scan.next();
+                System.out.print("Please enter card expiration date: ");
+                String expdate = scan.next();
 
+                String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?"
+                PreparedStatement checkcust = connection.prepareStatement(findCust);
+                checkcust.setString(1,fname);
+                checkcust.setString(2,lname);
+                ResultSet rs = checkcust.executeQuery();
+                if (!rs.next()){
+                    print("Sorry, that user already exists in the system.");
+
+                }z
             }
             else if(in == '2'){
 
