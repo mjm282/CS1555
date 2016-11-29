@@ -442,10 +442,12 @@ public class dbinterface{
                     getPrice.setString(1, origin);
                     getPrice.setString(2, dest);
                     ResultSet rs = getPrice.executeQuery();
-                    String high_price_to = "";
-                    String high_price_from = "";
-                    String low_price_to = "";
-                    String low_price_from = "";
+                    String high_price_to = "0";
+                    String high_price_from = "0";
+                    String low_price_to = "0";
+                    String low_price_from = "0";
+                    boolean to = false;
+                    boolean from = false;
                     String output = "";
                     while(rs.next()){
                         high_price_to = rs.getString("high_price");
@@ -453,6 +455,8 @@ public class dbinterface{
                         output = String.format("The high cost from %s to %s is %s", origin, dest, high_price_to);
                         System.out.println(output);
                         output = String.format("The low cost from %s to %s is %s", origin, dest, low_price_to);
+                        System.out.println(output);
+                        to = true;
                     }
                     getPrice = connection.prepareStatement(findprice);
                     getPrice.setString(1, dest);
@@ -464,12 +468,17 @@ public class dbinterface{
                         output = String.format("The high cost from %s to %s is %s", dest, origin, high_price_from);
                         System.out.println(output);
                         output = String.format("The low cost from %s to %s is %s", dest, origin, low_price_from);
+                        System.out.println(output);
+                        from = true;
                     }
-                    int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
-                    int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
-                    output = String.format("The high price for a round trip from %s to %s is %d",origin,dest,high_round);
-                    System.out.println(output);
-                    output = String.format("The low price for a round trip from %s to %s is %d",origin,dest,low_round);
+                    if(to && from){
+                        int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
+                        int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
+                        output = String.format("The high price for a round trip from %s to %s is %d",origin,dest,high_round);
+                        System.out.println(output);
+                        output = String.format("The low price for a round trip from %s to %s is %d",origin,dest,low_round);
+                        System.out.println(output);
+                    }
                     
                 } catch (SQLException ex) {
                     Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
