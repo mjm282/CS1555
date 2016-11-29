@@ -175,6 +175,22 @@ public class dbinterface{
                     print("Sorry, that user already exists in the system.");
 
                 }
+                else{
+
+                    String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?)";
+                    PreparedStatement putCust = connection.prepareStatement(insCust);
+                    putCust.setString(1, salutation);
+                    putCust.setString(2, fname);
+                    putCust.setString(3, lname);
+                    putCust.setString(4, street);
+                    putCust.setString(5, city);
+                    putCust.setString(6, state);
+                    putCust.setString(7, pn);
+                    putCust.setString(8, email);
+                    putCust.setString(9, cc);
+                    putCust.setString(10, expdate);
+                    putCust.executeUpdate();
+                }
             }
             else if(in == '2'){
 
