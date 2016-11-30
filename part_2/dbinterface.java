@@ -320,7 +320,7 @@ public class dbinterface{
     }
 
 
-        public static void userInterface() throws ParseException{
+    public static void userInterface() {//throws ParseException{
         Scanner scan;
         scan = new Scanner(System.in);
         System.out.println("User menu");
@@ -393,8 +393,9 @@ public class dbinterface{
                         putCust.setString(11, email);
                         putCust.executeUpdate();
                     }
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e){//(SQLException ex) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
             }
             else if(in == '2'){
@@ -426,8 +427,9 @@ public class dbinterface{
                     else{
                         System.out.println("not found");
                     }
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    //Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
 
 
@@ -482,8 +484,9 @@ public class dbinterface{
                         System.out.println(output);
                     }
                     
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
                     
             }
@@ -513,8 +516,9 @@ public class dbinterface{
                         System.out.println(rs);
                     }
                 
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
                     
                 
@@ -548,8 +552,9 @@ public class dbinterface{
                         System.out.println(rs);
                     }
                 
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
                     
             }
@@ -593,8 +598,9 @@ public class dbinterface{
                         System.out.println(rs);
                     }
                 
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
             }
             else if(in == '7'){
@@ -621,8 +627,9 @@ public class dbinterface{
                         
                         }
                     }
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
             }
             else if(in == '0'){
@@ -634,8 +641,9 @@ public class dbinterface{
                     PreparedStatement updateRes = connection.prepareStatement(resquery);
                     updateRes.setString(1,resnum);
                     updateRes.executeUpdate();
-                } catch (SQLException ex) {
-                    Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
                 }
             }
             else if(in != 'q'){
