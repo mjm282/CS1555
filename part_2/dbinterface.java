@@ -356,28 +356,12 @@ public class dbinterface{
 		}
 	}
 	
-    public static void userInterface() {//throws ParseException{
-        Scanner scan;
-        scan = new Scanner(System.in);
-        System.out.println("User menu");
-        System.out.println(USER_MENU);
-
-        char in = 'z';
-        try{
-            in = (char) System.in.read();
-            while(in == '\n'){
-                in = (char) System.in.read();
-            }   
-        }
-        catch(Exception e1){
-            System.out.println("read error" + e1);
-        }
-        while(in != 'q'){
-            if(scan.hasNextLine()){
-                scan.nextLine();
-            }
-            if(in == '1'){
-                try { 
+       public static void cUserQuery(String query){
+           
+           
+       }
+       public static void createUser(Scanner scan) {
+        try { 
                     System.out.println("Create New User");
                     System.out.print("Please enter a salutation: ");
                     String salutation = scan.nextLine();
@@ -399,7 +383,7 @@ public class dbinterface{
                     String cc = scan.nextLine();
                     System.out.print("Please enter card expiration date: ");
                     String expdate = scan.nextLine();
-
+                    
                     String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
                     PreparedStatement checkcust = connection.prepareStatement(findCust);
                     checkcust.setString(1,fname);
@@ -407,10 +391,10 @@ public class dbinterface{
                     ResultSet rs = checkcust.executeQuery();
                     if (rs.next()){ // if we got a result, then someone is already in the db
                         System.out.println("Sorry, that user already exists in the system.");
-
+                        
                     }
                     else{
-
+                        
                         String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
                         PreparedStatement putCust = connection.prepareStatement(insCust);
                         Random rand = new Random();
@@ -431,276 +415,305 @@ public class dbinterface{
                     }
                 } catch (Exception e){//(SQLException ex) {
                     // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                    e.printStackTrace();
+					e.printStackTrace();
                 }
-                }
-                else if(in == '2'){
-
-                    try {
-                        System.out.println("Find User Information");
-                        System.out.print("Please enter first name: ");
-                        String fname = scan.nextLine();
-                        System.out.print("Please enter last name: ");
-                        String lname = scan.nextLine();
-                        String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
-                        PreparedStatement checkcust = connection.prepareStatement(findCust);
-                        checkcust.setString(1, fname);
-                        checkcust.setString(2, lname);
-                        ResultSet rs = checkcust.executeQuery();
-                        if (rs.next()){
-                            System.out.println(rs.getString(1) + " " 
-                                    + rs.getString(2) + " "
-                                    + rs.getString(3) + " "
-                                    + rs.getString(4) + " "
-                                    + rs.getString(5) + " "
-                                    + rs.getDate(6)   + " "
-                                    + rs.getString(7) + " "
-                                    + rs.getString(8) + " "
-                                    + rs.getString(9) + " "
-                                    + rs.getString(10)+ " "
-                                    + rs.getString(11));
-                        }
-                        else{
-                            System.out.println("not found");
-                        }
-                    } catch (Exception e) {
-                        //Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-
-
-                }
-                else if(in == '3'){
-                    try {
-                        System.out.println("Find Price Information");
-                        System.out.print("Please enter origin city: ");
-                        String origin = scan.next();
-                        System.out.print("Please enter destination city: ");
-                        String dest = scan.next();
-                        String findprice = "SELECT high_price, low_price FROM Price WHERE departure_city = ? AND arrival_city = ?";
-                        PreparedStatement getPrice = connection.prepareStatement(findprice);
-                        getPrice.setString(1, origin);
-                        getPrice.setString(2, dest);
-                        ResultSet rs = getPrice.executeQuery();
-                        String high_price_to = "0";
-                        String high_price_from = "0";
-                        String low_price_to = "0";
-                        String low_price_from = "0";
-                        boolean to = false;
-                        boolean from = false;
-                        String output = "";
-                        while(rs.next()){
-                            high_price_to = rs.getString("high_price");
-                            low_price_to = rs.getString("low_price");
-                            output = String.format("The high cost from %s to %s is %s", origin, dest, high_price_to);
-                            System.out.println(output);
-                            output = String.format("The low cost from %s to %s is %s", origin, dest, low_price_to);
-                            System.out.println(output);
-                            to = true;
-                        }
-                        getPrice = connection.prepareStatement(findprice);
-                        getPrice.setString(1, dest);
-                        getPrice.setString(2, origin);
-                        rs = getPrice.executeQuery();
-                        while(rs.next()){
-                            high_price_from = rs.getString("high_price");
-                            low_price_from = rs.getString("low_price");
-                            output = String.format("The high cost from %s to %s is %s", dest, origin, high_price_from);
-                            System.out.println(output);
-                            output = String.format("The low cost from %s to %s is %s", dest, origin, low_price_from);
-                            System.out.println(output);
-                            from = true;
-                        }
-                        if(to && from){
-                            int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
-                            int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
-                            output = String.format("The high price for a round trip from %s to %s is %d",origin,dest,high_round);
-                            System.out.println(output);
-                            output = String.format("The low price for a round trip from %s to %s is %d",origin,dest,low_round);
-                            System.out.println(output);
-                        }
-
-                    } catch (Exception e) {
-                        // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-
-                }
-                else if(in == '4'){
-
-                    try {
-                        //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
-                        System.out.println("Find Routes");
-                        System.out.print("Please enter origin city: ");
-                        String origin = scan.next();
-                        System.out.print("Please enter destination city: ");
-                        String dest = scan.next();
-                        String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ?";
-                        PreparedStatement findDirect = connection.prepareStatement(directQuery);
-                        findDirect.setString(1,origin);
-                        findDirect.setString(2,dest);
-                        ResultSet rs = findDirect.executeQuery();
-                        while(rs.next()){
-                            System.out.println(rs);
-                        }
-                        String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ?";
-                        PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
-                        findIndirect.setString(1, origin);
-                        findIndirect.setString(2, dest);
-                        rs = findIndirect.executeQuery();
-                        while(rs.next()){
-                            System.out.println(rs);
-                        }
-
-                    } catch (Exception e) {
-                        // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-
-
-                }
-                else if(in == '5'){
-                    try {
-                        //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
-                        System.out.println("Find Routes");
-                        System.out.print("Please enter origin city: ");
-                        String origin = scan.next();
-                        System.out.print("Please enter destination city: ");
-                        String dest = scan.next();
-                        System.out.print("Please enter airline: ");
-                        String airline = scan.next();
-                        String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
-                        PreparedStatement findDirect = connection.prepareStatement(directQuery);
-                        findDirect.setString(1,origin);
-                        findDirect.setString(2,dest);
-                        findDirect.setString(3,airline);
-                        ResultSet rs = findDirect.executeQuery();
-                        while(rs.next()){
-                            System.out.println(rs);
-                        }
-                        String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND airline_id = ?";
-                        PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
-                        findIndirect.setString(1, origin);
-                        findIndirect.setString(2, dest);
-                        findIndirect.setString(3, airline);
-                        rs = findIndirect.executeQuery();
-                        while(rs.next()){
-                            System.out.println(rs);
-                        }
-
-                    } catch (Exception e) {
-                        // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-
-                }
-                else if(in == '6'){
-                    try {
-                        Calendar c = Calendar.getInstance();
-                        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                        //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
-                        System.out.println("Find Routes");
-                        System.out.print("Please enter origin city: ");
-                        String origin = scan.next();
-                        System.out.print("Please enter destination city: ");
-                        String dest = scan.next();
-                        System.out.print("Please enter airline: ");
-                        String airline = scan.next();
-                        System.out.print("Please enter a date:");
-                        String ds = scan.next();
-                        java.util.Date date = formatter.parse(ds);                  
-                        c.setTime(date);
-                        String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time,weekly_schedule FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
-                        PreparedStatement findDirect = connection.prepareStatement(directQuery);
-                        findDirect.setString(1,origin);
-                        findDirect.setString(2,dest);
-                        findDirect.setString(3,airline);
-                        ResultSet rs = findDirect.executeQuery();
-                        while(rs.next()){
-                            String schedule = rs.getString("weekly_schedule");
-                            int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-                            if (!(schedule.charAt(dayOfWeek-1) == '-')){
-                                System.out.println(rs);
-                            }
-
-                        }
-                        String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND airline_id = ?";
-                        PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
-                        findIndirect.setString(1, origin);
-                        findIndirect.setString(2, dest);
-                        findIndirect.setString(3, airline);
-                        rs = findIndirect.executeQuery();
-                        while(rs.next()){
-                            System.out.println(rs);
-                        }
-
-                    } catch (Exception e) {
-                        // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-                }
-                else if(in == '7'){
-
-                }
-                else if(in == '8'){
-
-                }
-                else if(in == '9'){
-                    try {
-                        System.out.println("Find Reservation Info:");
-                        System.out.print("Please enter reservation number: ");
-                        String resnum = scan.next();
-                        String resquery = "SELECT * FROM Reservation_details WHERE reservation_number = ?";
-                        PreparedStatement findlegs = connection.prepareStatement(resquery);
-                        findlegs.setString(1, resnum);
-                        ResultSet rs = findlegs.executeQuery();
-                        if(!rs.next()){
-                            System.out.println("Sorry, that wasn't a valid reservation number.");
-                        }
-                        else{
-                            while(rs.next()){
-                                System.out.println(rs);
-
-                            }
-                        }
-                    } catch (Exception e) {
-                        // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-                }
-                else if(in == '0'){
-                    try {
-                        System.out.println("Ticket Reservation:");
-                        System.out.print("Please enter reservation number: ");
-                        String resnum = scan.next();
-                        String resquery = "UPDATE Reservation SET tickted = 1 WHERE reservation_number = ?";
-                        PreparedStatement updateRes = connection.prepareStatement(resquery);
-                        updateRes.setString(1,resnum);
-                        updateRes.executeUpdate();
-                    } catch (Exception e) {
-                        // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-                        e.printStackTrace();
-                    }
-                }
-                else if(in != 'q'){
-                    System.out.println("invalid");
-                }
-                //read input
-                System.out.println(USER_MENU);
-                try{
-                    in = (char) System.in.read();
-                    while(in == '\n'){
-                        in = (char) System.in.read();
-                    }
-                }
-                catch(Exception e3){
-                    System.out.println("cannot read");
-                    in = 'z';
-                }
-
+    }   
+    public static void findUser(Scanner scan) {
+        try {
+            System.out.println("Find User Information");
+            System.out.print("Please enter first name: ");
+            String fname = scan.nextLine();
+            System.out.print("Please enter last name: ");
+            String lname = scan.nextLine();
+            String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
+            PreparedStatement checkcust = connection.prepareStatement(findCust);
+            checkcust.setString(1, fname);
+            checkcust.setString(2, lname);
+            ResultSet rs = checkcust.executeQuery();
+            if (rs.next()) {
+                System.out.println(rs.getString(1) + " "
+                        + rs.getString(2) + " "
+                        + rs.getString(3) + " "
+                        + rs.getString(4) + " "
+                        + rs.getString(5) + " "
+                        + rs.getDate(6) + " "
+                        + rs.getString(7) + " "
+                        + rs.getString(8) + " "
+                        + rs.getString(9) + " "
+                        + rs.getString(10) + " "
+                        + rs.getString(11));
+            } else {
+                System.out.println("not found");
             }
-            System.out.println("quitting");
-
+        } catch (Exception e) {
+            //Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+            e.printStackTrace();
         }
     }
+    
+    
+    public static void findPriceInfo(Scanner scan) {
+        try {
+            System.out.println("Find Price Information");
+            System.out.print("Please enter origin city: ");
+            String origin = scan.next();
+            System.out.print("Please enter destination city: ");
+            String dest = scan.next();
+            String findprice = "SELECT high_price, low_price FROM Price WHERE departure_city = ? AND arrival_city = ?";
+            PreparedStatement getPrice = connection.prepareStatement(findprice);
+            getPrice.setString(1, origin);
+            getPrice.setString(2, dest);
+            ResultSet rs = getPrice.executeQuery();
+            String high_price_to = "0";
+            String high_price_from = "0";
+            String low_price_to = "0";
+            String low_price_from = "0";
+            boolean to = false;
+            boolean from = false;
+            String output = "";
+            while (rs.next()) {
+                high_price_to = rs.getString("high_price");
+                low_price_to = rs.getString("low_price");
+                output = String.format("The high cost from %s to %s is %s", origin, dest, high_price_to);
+                System.out.println(output);
+                output = String.format("The low cost from %s to %s is %s", origin, dest, low_price_to);
+                System.out.println(output);
+                to = true;
+            }
+            getPrice = connection.prepareStatement(findprice);
+            getPrice.setString(1, dest);
+            getPrice.setString(2, origin);
+            rs = getPrice.executeQuery();
+            while (rs.next()) {
+                high_price_from = rs.getString("high_price");
+                low_price_from = rs.getString("low_price");
+                output = String.format("The high cost from %s to %s is %s", dest, origin, high_price_from);
+                System.out.println(output);
+                output = String.format("The low cost from %s to %s is %s", dest, origin, low_price_from);
+                System.out.println(output);
+                from = true;
+            }
+            if (to && from) {
+                int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
+                int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
+                output = String.format("The high price for a round trip from %s to %s is %d", origin, dest, high_round);
+                System.out.println(output);
+                output = String.format("The low price for a round trip from %s to %s is %d", origin, dest, low_round);
+                System.out.println(output);
+            }
+
+        } catch (Exception e) {
+            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+            e.printStackTrace();
+        }
+    }
+    
+    public static void findRoutes(Scanner scan) {
+        try {
+            //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
+            System.out.println("Find Routes");
+            System.out.print("Please enter origin city: ");
+            String origin = scan.next();
+            System.out.print("Please enter destination city: ");
+            String dest = scan.next();
+            String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ?";
+            PreparedStatement findDirect = connection.prepareStatement(directQuery);
+            findDirect.setString(1, origin);
+            findDirect.setString(2, dest);
+            ResultSet rs = findDirect.executeQuery();
+            while (rs.next()) {
+                System.out.println(rs);
+            }
+            String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ?";
+            PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
+            findIndirect.setString(1, origin);
+            findIndirect.setString(2, dest);
+            rs = findIndirect.executeQuery();
+            while (rs.next()) {
+                System.out.println(rs);
+            }
+
+        } catch (Exception e) {
+            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+            e.printStackTrace();
+        }
+    }
+        
+   
+    public static void userInterface() {//throws ParseException{
+        Scanner scan;
+        scan = new Scanner(System.in);
+        System.out.println("User menu");
+        System.out.println(USER_MENU);
+
+        char in = 'z';
+        try{
+            in = (char) System.in.read();
+            while(in == '\n'){
+                in = (char) System.in.read();
+            }   
+        }
+        catch(Exception e1){
+            System.out.println("read error" + e1);
+        }
+        while(in != 'q'){
+            if(scan.hasNextLine()){
+                scan.nextLine();
+            }
+            if(in == '1'){
+                createUser(scan);
+            }
+            else if(in == '2'){
+                findUser(scan);
+            }
+            else if(in == '3'){
+                findPriceInfo(scan);
+            }
+            else if(in == '4'){
+                findRoutes(scan);   
+            }
+            else if(in == '5'){
+                try {
+                    //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
+                    System.out.println("Find Routes");
+                    System.out.print("Please enter origin city: ");
+                    String origin = scan.next();
+                    System.out.print("Please enter destination city: ");
+                    String dest = scan.next();
+                    System.out.print("Please enter airline: ");
+                    String airline = scan.next();
+                    String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
+                    PreparedStatement findDirect = connection.prepareStatement(directQuery);
+                    findDirect.setString(1,origin);
+                    findDirect.setString(2,dest);
+                    findDirect.setString(3,airline);
+                    ResultSet rs = findDirect.executeQuery();
+                    while(rs.next()){
+                        System.out.println(rs);
+                    }
+                    String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND airline_id = ?";
+                    PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
+                    findIndirect.setString(1, origin);
+                    findIndirect.setString(2, dest);
+                    findIndirect.setString(3, airline);
+                    rs = findIndirect.executeQuery();
+                    while(rs.next()){
+                        System.out.println(rs);
+                    }
+                
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
+                }
+                    
+            }
+            else if(in == '6'){
+                try {
+                    Calendar c = Calendar.getInstance();
+                    DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                    //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
+                    System.out.println("Find Routes");
+                    System.out.print("Please enter origin city: ");
+                    String origin = scan.next();
+                    System.out.print("Please enter destination city: ");
+                    String dest = scan.next();
+                    System.out.print("Please enter airline: ");
+                    String airline = scan.next();
+                    System.out.print("Please enter a date:");
+                    String ds = scan.next();
+                    java.util.Date date = formatter.parse(ds);                  
+                    c.setTime(date);
+                    String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time,weekly_schedule FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
+                    PreparedStatement findDirect = connection.prepareStatement(directQuery);
+                    findDirect.setString(1,origin);
+                    findDirect.setString(2,dest);
+                    findDirect.setString(3,airline);
+                    ResultSet rs = findDirect.executeQuery();
+                    while(rs.next()){
+                        String schedule = rs.getString("weekly_schedule");
+                        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                        if (!(schedule.charAt(dayOfWeek-1) == '-')){
+                            System.out.println(rs);
+                        }
+
+                    }
+                    String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND airline_id = ?";
+                    PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
+                    findIndirect.setString(1, origin);
+                    findIndirect.setString(2, dest);
+                    findIndirect.setString(3, airline);
+                    rs = findIndirect.executeQuery();
+                    while(rs.next()){
+                        System.out.println(rs);
+                    }
+                
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
+                }
+            }
+            else if(in == '7'){
+
+            }
+            else if(in == '8'){
+
+            }
+            else if(in == '9'){
+                try {
+                    System.out.println("Find Reservation Info:");
+                    System.out.print("Please enter reservation number: ");
+                    String resnum = scan.next();
+                    String resquery = "SELECT * FROM Reservation_details WHERE reservation_number = ?";
+                    PreparedStatement findlegs = connection.prepareStatement(resquery);
+                    findlegs.setString(1, resnum);
+                    ResultSet rs = findlegs.executeQuery();
+                    if(!rs.next()){
+                        System.out.println("Sorry, that wasn't a valid reservation number.");
+                    }
+                    else{
+                        while(rs.next()){
+                            System.out.println(rs);
+                        
+                        }
+                    }
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
+                }
+            }
+            else if(in == '0'){
+                try {
+                    System.out.println("Ticket Reservation:");
+                    System.out.print("Please enter reservation number: ");
+                    String resnum = scan.next();
+                    String resquery = "UPDATE Reservation SET tickted = 1 WHERE reservation_number = ?";
+                    PreparedStatement updateRes = connection.prepareStatement(resquery);
+                    updateRes.setString(1,resnum);
+                    updateRes.executeUpdate();
+                } catch (Exception e) {
+                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+					e.printStackTrace();
+                }
+            }
+            else if(in != 'q'){
+                System.out.println("invalid");
+            }
+            //read input
+            System.out.println(USER_MENU);
+            try{
+                in = (char) System.in.read();
+                while(in == '\n'){
+                    in = (char) System.in.read();
+                }
+            }
+            catch(Exception e3){
+                System.out.println("cannot read");
+                in = 'z';
+            }
+            
+        }
+        System.out.println("quitting");
+
+    }
+}
 
