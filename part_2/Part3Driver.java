@@ -3,13 +3,15 @@
 //
 // group 13
 
+import java.io.*;
+
 public class Part3Driver{
 
 
     public static void main(String[] args){
 
         // Connect to the DB
-
+        dbinterface.connectToDB();
 
         // Call admin1 (erase the DB)
 
@@ -98,7 +100,7 @@ public class Part3Driver{
 
 
         // Close connection   
-
+        dbinterface.closeDB();
 
     }
 
