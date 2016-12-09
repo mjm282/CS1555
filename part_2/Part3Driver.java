@@ -26,7 +26,7 @@ public class Part3Driver{
         dbinterface.importAirlines(loadAirlineFile);
 
         // Call admin3 (load schedule)
-        dbinterface.importFlights(loadFlightFile)
+        dbinterface.importFlights(loadFlightFile);
 
         // Call admin4 (load pricing)
         
