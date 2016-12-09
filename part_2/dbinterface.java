@@ -111,206 +111,74 @@ public class dbinterface{
 
         while(in!='q'){
             Scanner adminScan = new Scanner(System.in);
-            if(in == '1')
-            {
-                try{
-                    String[] tables = {"Reservation_details",  "Reservation", "Customer", "Price", "Flight", "Plane", "Airline"};
-                    statement = connection.createStatement();
-                    String deleteQuery = "DELETE FROM ";
-                    for(int i = 0; i < tables.length; i++)
-                    {
-                        statement.executeQuery(deleteQuery + tables[i]);
-                    }
-                }catch(Exception e)
-                {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                }
-
-            }
-            else if(in == '2') //insert airline data
-            {
-                System.out.println("Please enter full path to airline data file");
-                String airFile = adminScan.next();
-                query = "INSERT INTO Airline VALUES (?,?,?,?)";
-                String line;
-                String[] lineSplit;
-                try{
-                    BufferedReader read = new BufferedReader(new FileReader(airFile));
-                    prepStatement = connection.prepareStatement(query);
-                    while((line = read.readLine()) != null)
-                    {
-                        lineSplit = line.split(" ");
-                        prepStatement.setString(1, lineSplit[0]);
-                        prepStatement.setString(2, lineSplit[1]);
-                        prepStatement.setString(3, lineSplit[2]);
-                        prepStatement.setInt(4, Integer.parseInt(lineSplit[3]));
-
-                        prepStatement.executeUpdate();
-                    }
-                }catch (Exception e){
-                    System.out.println("Error: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            else if(in == '3') //insert flight data
-            {
-                System.out.println("Please enter full path to scheduling data file");
-                String airFile = adminScan.next();
-                query = "INSERT INTO Flight VALUES (?,?,?,?,?,?,?,?)";
-                String line;
-                String[] lineSplit;
-                try{
-                    BufferedReader read = new BufferedReader(new FileReader(airFile));
-                    prepStatement = connection.prepareStatement(query);
-                    while((line = read.readLine()) != null)
-                    {
-                        lineSplit = line.split(" ");
-                        prepStatement.setString(1, lineSplit[0]);
-                        prepStatement.setString(2, lineSplit[1]);
-                        prepStatement.setString(3, lineSplit[2]);
-                        prepStatement.setString(4, lineSplit[3]);
-                        prepStatement.setString(5, lineSplit[4]);
-                        prepStatement.setString(6, lineSplit[5]);
-                        prepStatement.setString(7, lineSplit[6]);
-                        prepStatement.setString(8, lineSplit[7]);
-                        //			prepStatement.setString(8, lineSplit[8]);
-
-                        prepStatement.executeUpdate();
-                    }
-                }catch (Exception e){
-                    System.out.println("Error: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            else if(in == '4')
-            {
-                System.out.println("Do you want to: \n" +
+			switch(in){
+				case '1':
+					deleteTables();
+					break;
+				case '2': //insert airline data
+					System.out.println("Please enter full path to airline data file");
+					String airFile = adminScan.next();
+					importAirlines(airFile);
+					break;
+				case '3':		
+					System.out.println("Please enter full path to scheduling data file");
+					String flightFile = adminScan.next();
+					importFlights(flightFile);
+					break;
+					
+				case '4':
+					System.out.println("Do you want to: \n" +
                         "L: Load pricing information\n" +
                         "C: Change the price of an existing fight");
-                String priceChoice = adminScan.next();
-                if(priceChoice.equals("L"))
-                {
-                    System.out.println("Please enter full path to pricing information");
-                    String priceFile = adminScan.next();
-                    query = "INSERT INTO Price VALUES (?,?,?,?,?)";
-                    String line;
-                    String[] lineSplit;
-                    try{
-                        BufferedReader read = new BufferedReader(new FileReader(priceFile));
-                        prepStatement = connection.prepareStatement(query);
-                        while((line = read.readLine()) != null)
-                        {
-                            lineSplit = line.split(" ");
-                            prepStatement.setString(1, lineSplit[0]);
-                            prepStatement.setString(2, lineSplit[1]);
-                            prepStatement.setString(3, lineSplit[2]);
-                            prepStatement.setInt(4, Integer.parseInt(lineSplit[3]));
-                            prepStatement.setInt(5, Integer.parseInt(lineSplit[4]));
+					String priceChoice = adminScan.next();
+					if(priceChoice.equals("L"))
+					{
+						System.out.println("Please enter full path to pricing information");
+						String priceFile = adminScan.next();
+						
+					}
+					else if(priceChoice.equals("C"))
+					{
+						System.out.println("Please enter departure city, arrival city, high price, and low price separated by spaces");
+						String depCity = adminScan.next();
+						String arrCity = adminScan.next();
+						String high = adminScan.next();
+						String low = adminScan.next();
+						
+						changePrice(depCity, arrCity, high, low);
+					}
+					else
+					{
+						System.out.println("Invalid Choice");
+					}
+					break;
+					
+				case '5':
+					System.out.println("Please enter full path to plane data file");
+					String planeFile = adminScan.next();
+					importPlanes(planeFile);				
+					break;
+					
+				case '6':
+					System.out.println("Please enter flight number and date, separated by spaces");
+					String fNumber = adminScan.next();
+					String fDate = adminScan.next();
+					printManifest(fNumber, fDate);
+					break;
+					
+				case 'q':
+					System.out.println("Thank you for your time\nExiting.....");
+					break;
+					
+				case 'h':
+					System.out.println(ADMIN_MENU);
+					break;
+				
+				default:
+					System.out.println("Invalid Command");
+					break;
+			}		
 
-                            prepStatement.executeUpdate();
-                        }
-                    }catch (Exception e){
-                        System.out.println("Error: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-                else if(priceChoice.equals("C"))
-                {
-                    System.out.println("Please enter departure city, arrival city, high price, and low price separated by spaces");
-                    String depCity = adminScan.next();
-                    String arrCity = adminScan.next();
-                    String high = adminScan.next();
-                    String low = adminScan.next();
-
-                    query = "UPDATE Price SET high_price = ?, low_price = ? WHERE departure_city = ? AND arrival_city = ?";
-
-                    //System.out.println(query);
-                    try{
-                        prepStatement = connection.prepareStatement(query);
-                        prepStatement.setInt(1, Integer.parseInt(high));
-                        prepStatement.setInt(2, Integer.parseInt(low));
-                        prepStatement.setString(3, depCity);
-                        prepStatement.setString(4, arrCity);
-
-                        prepStatement.executeUpdate();
-                    }catch (Exception e){
-                        System.out.println("Error: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-
-                }
-                else
-                {
-                    System.out.println("Invalid");
-                }
-
-            }
-            else if(in == '5') //insert plane data
-            {
-                System.out.println("Please enter full path to plane data file");
-                String airFile = adminScan.next();
-                query = "INSERT INTO Plane VALUES (?,?,?,?,?,?)";
-                String line;
-                String[] lineSplit;
-
-                java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
-
-                try{
-                    BufferedReader read = new BufferedReader(new FileReader(airFile));
-                    prepStatement = connection.prepareStatement(query);
-                    while((line = read.readLine()) != null)
-                    {
-                        lineSplit = line.split(" ");
-
-                        prepStatement.setString(1, lineSplit[0]);
-                        prepStatement.setString(2, lineSplit[1]);
-                        prepStatement.setInt(3, Integer.parseInt(lineSplit[2]));
-                        java.sql.Date date = new java.sql.Date (df.parse(lineSplit[3]).getTime());
-                        prepStatement.setDate(4, date);
-                        prepStatement.setInt(5, Integer.parseInt(lineSplit[4]));
-                        prepStatement.setString(6, lineSplit[5]);
-
-                        prepStatement.executeUpdate();
-                    }
-                }catch (Exception e){
-                    System.out.println("Error: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            else if(in == '6')
-            {
-                System.out.println("Please enter flight number and date, separated by spaces");
-                String fNumber = adminScan.next();
-                String fDate = adminScan.next();
-
-                query = "SELECT salutation, first_name, last_name FROM Customer WHERE cid IN( SELECT cid FROM Reservation WHERE reservation_number IN ( SELECT reservation_number FROM Reservation_details WHERE flight_number = ? AND flight_date = to_date(?, 'MM/DD/YYYY')))";
-                // query = "SELECT salutation, first_name, last_name FROM Customer WHERE cid IN( SELECT cid FROM Reservation WHERE reservation_number IN ( SELECT reservation_number FROM Reservation_details WHERE flight_number = ? AND flight_date = ?))";
-                try{
-                    prepStatement = connection.prepareStatement(query);
-                    prepStatement.setString(1, fNumber);
-                    java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
-                    java.sql.Date datef = new java.sql.Date (df.parse(fDate).getTime());
-                    prepStatement.setString(2, fDate);
-                    // prepStatement.setDate(2, datef);
-
-                    resultSet = prepStatement.executeQuery();
-                    while (resultSet.next())
-                    {
-                        System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
-                    }
-
-                }catch (Exception e){
-                    System.out.println("Error: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            else if(in != 'q')
-            {
-                System.out.println("invalid");
-            }
-
-            System.out.println(ADMIN_MENU);
             try{
                 in = (char) System.in.read();
                 while(in == '\n'){
@@ -325,8 +193,166 @@ public class dbinterface{
         }
 
     }
+	
+	public static void deleteTables(){
+		try{
+			String[] tables = {"Reservation_details",  "Reservation", "Customer", "Price", "Flight", "Plane", "Airline"};
+			statement = connection.createStatement();
+			String deleteQuery = "DELETE FROM ";
+			for(int i = 0; i < tables.length; i++)
+			{
+				statement.executeQuery(deleteQuery + tables[i]);
+			}
+		}catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
+	public static void importAirlines(String airFile){
+		query = "INSERT INTO Airline VALUES (?,?,?,?)";
+		String line;
+		String[] lineSplit;
+		try{
+			BufferedReader read = new BufferedReader(new FileReader(airFile));
+			prepStatement = connection.prepareStatement(query);
+			while((line = read.readLine()) != null)
+			{
+				lineSplit = line.split(",");
+				prepStatement.setString(1, lineSplit[0]);
+				prepStatement.setString(2, lineSplit[1]);
+				prepStatement.setString(3, lineSplit[2]);
+				prepStatement.setInt(4, Integer.parseInt(lineSplit[3]));
 
+				prepStatement.executeUpdate();
+			}
+		}catch (Exception e){
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}		
+	}
+	
+	public static void importFlights(String flightFile){
+		query = "INSERT INTO Flight VALUES (?,?,?,?,?,?,?,?)";
+		String line;
+		String[] lineSplit;
+		try{
+			BufferedReader read = new BufferedReader(new FileReader(flightFile));
+			prepStatement = connection.prepareStatement(query);
+			while((line = read.readLine()) != null)
+			{
+				lineSplit = line.split(",");
+				prepStatement.setString(1, lineSplit[0]);
+				prepStatement.setString(2, lineSplit[1]);
+				prepStatement.setString(3, lineSplit[2]);
+				prepStatement.setString(4, lineSplit[3]);
+				prepStatement.setString(5, lineSplit[4]);
+				prepStatement.setString(6, lineSplit[5]);
+				prepStatement.setString(7, lineSplit[6]);
+				prepStatement.setString(8, lineSplit[7]);
+
+				prepStatement.executeUpdate();
+			}
+		}catch (Exception e){
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public static void importPrice(String priceFile){
+		query = "INSERT INTO Price VALUES (?,?,?,?,?)";
+		String line;
+		String[] lineSplit;
+		try{
+			BufferedReader read = new BufferedReader(new FileReader(priceFile));
+			prepStatement = connection.prepareStatement(query);
+			while((line = read.readLine()) != null)
+			{
+				lineSplit = line.split(",");
+				prepStatement.setString(1, lineSplit[0]);
+				prepStatement.setString(2, lineSplit[1]);
+				prepStatement.setString(3, lineSplit[2]);
+				prepStatement.setInt(4, Integer.parseInt(lineSplit[3]));
+				prepStatement.setInt(5, Integer.parseInt(lineSplit[4]));
+
+				prepStatement.executeUpdate();
+			}
+		}catch (Exception e){
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public static void changePrice(String depCity, String arrCity, String high, String low){
+		query = "UPDATE Price SET high_price = ?, low_price = ? WHERE departure_city = ? AND arrival_city = ?";
+		try{
+			prepStatement = connection.prepareStatement(query);
+			prepStatement.setInt(1, Integer.parseInt(high));
+			prepStatement.setInt(2, Integer.parseInt(low));
+			prepStatement.setString(3, depCity);
+			prepStatement.setString(4, arrCity);
+
+			prepStatement.executeUpdate();
+		}catch (Exception e){
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public static void importPlanes(String planeFile){
+		query = "INSERT INTO Plane VALUES (?,?,?,?,?,?)";
+		String line;
+		String[] lineSplit;
+
+		java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
+
+		try{
+			BufferedReader read = new BufferedReader(new FileReader(planeFile));
+			prepStatement = connection.prepareStatement(query);
+			while((line = read.readLine()) != null)
+			{
+				lineSplit = line.split(",");
+
+				prepStatement.setString(1, lineSplit[0]);
+				prepStatement.setString(2, lineSplit[1]);
+				prepStatement.setInt(3, Integer.parseInt(lineSplit[2]));
+				java.sql.Date date = new java.sql.Date (df.parse(lineSplit[3]).getTime());
+				prepStatement.setDate(4, date);
+				prepStatement.setInt(5, Integer.parseInt(lineSplit[4]));
+				prepStatement.setString(6, lineSplit[5]);
+
+				prepStatement.executeUpdate();
+			}
+		}catch (Exception e){
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public static void printManifest(String fNumber, String fDate){
+		query = "SELECT salutation, first_name, last_name FROM Customer WHERE cid IN( SELECT cid FROM Reservation WHERE reservation_number IN ( SELECT reservation_number FROM Reservation_details WHERE flight_number = ? AND flight_date = to_date(?, 'MM/DD/YYYY')))";
+		// query = "SELECT salutation, first_name, last_name FROM Customer WHERE cid IN( SELECT cid FROM Reservation WHERE reservation_number IN ( SELECT reservation_number FROM Reservation_details WHERE flight_number = ? AND flight_date = ?))";
+		try{
+			prepStatement = connection.prepareStatement(query);
+			prepStatement.setString(1, fNumber);
+			java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("MM/DD/YYYY");
+			java.sql.Date datef = new java.sql.Date (df.parse(fDate).getTime());
+			prepStatement.setString(2, fDate);
+			// prepStatement.setDate(2, datef);
+
+			resultSet = prepStatement.executeQuery();
+			while (resultSet.next())
+			{
+				System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+			}
+
+		}catch (Exception e){
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
     public static void userInterface() {//throws ParseException{
         Scanner scan;
         scan = new Scanner(System.in);
