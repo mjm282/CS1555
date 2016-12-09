@@ -56,12 +56,15 @@ public class dbinterface{
         }
 
         //close the connection
-        System.out.println("closing connection to the db");
+        closeDB();
+    }
+
+    public static void closeDB(){
         try{
             connection.close();
         }
-        catch(Exception e5){
-            System.out.println("could not close");
+        catch(Exception e){
+            System.out.println("could not close the DB");
         }
     }
 
