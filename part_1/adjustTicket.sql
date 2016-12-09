@@ -81,7 +81,7 @@ CREATE OR REPLACE TRIGGER adjustTicket
                     THEN
                         cost - :old.high_price + :new.high_price
                     ELSE 
-                        cost - :old.low_price + :new.high_price
+                        cost - :old.low_price + :new.low_price
                     END
         where (reservation.start_city = :new.departure_city AND reservation.end_city = :new.arrival_city   AND reservation.ticketed = 'N' AND 
                 firstAirline(reservation_number) = :new.airline_id)
