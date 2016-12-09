@@ -356,10 +356,75 @@ public class dbinterface{
 		}
 	}
 	
-       public static void cUserQuery(String query){
-           
-           
-       }
+    public static void insertUserQuery(String salutation, String fname, String lname, String cc, String expdate, String street, String city, String state, String pn, String email) {
+
+        try {
+            String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
+            PreparedStatement putCust = connection.prepareStatement(insCust);
+            Random rand = new Random();
+            int n = rand.nextInt(99999999) + 10000000;
+            String cid = Integer.toString(n);
+            putCust.setString(1, cid);
+            putCust.setString(2, salutation);
+            putCust.setString(3, fname);
+            putCust.setString(4, lname);
+            putCust.setString(5, cc);
+            putCust.setString(6, expdate);
+            putCust.setString(7, street);
+            putCust.setString(8, city);
+            putCust.setString(9, state);
+            putCust.setString(10, pn);
+            putCust.setString(11, email);
+            putCust.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    public static boolean findUserQuery(String fname, String lname) {
+        try {
+            String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
+            PreparedStatement checkcust = connection.prepareStatement(findCust);
+            checkcust.setString(1, fname);
+            checkcust.setString(2, lname);
+            ResultSet rs = checkcust.executeQuery();
+            if (rs.next()) {
+                System.out.println(rs.getString(1) + " "
+                        + rs.getString(2) + " "
+                        + rs.getString(3) + " "
+                        + rs.getString(4) + " "
+                        + rs.getString(5) + " "
+                        + rs.getDate(6) + " "
+                        + rs.getString(7) + " "
+                        + rs.getString(8) + " "
+                        + rs.getString(9) + " "
+                        + rs.getString(10) + " "
+                        + rs.getString(11));
+                return true;
+            } else {
+                System.out.println("not found");
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
+    }
+    public static void findUser(Scanner scan) {
+        try {
+            System.out.println("Find User Information");
+            System.out.print("Please enter first name: ");
+            String fname = scan.nextLine();
+            System.out.print("Please enter last name: ");
+            String lname = scan.nextLine();
+            findUserQuery(fname,lname);
+        } catch (Exception e) {
+            //Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
+            e.printStackTrace();
+        }
+    }
+    
+    
        public static void createUser(Scanner scan) {
         try { 
                     System.out.println("Create New User");
@@ -383,73 +448,31 @@ public class dbinterface{
                     String cc = scan.nextLine();
                     System.out.print("Please enter card expiration date: ");
                     String expdate = scan.nextLine();
-                    
-                    String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
-                    PreparedStatement checkcust = connection.prepareStatement(findCust);
-                    checkcust.setString(1,fname);
-                    checkcust.setString(2,lname);
-                    ResultSet rs = checkcust.executeQuery();
-                    if (rs.next()){ // if we got a result, then someone is already in the db
+                    if (findUserQuery(fname, lname)){
                         System.out.println("Sorry, that user already exists in the system.");
-                        
                     }
                     else{
-                        
-                        String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
-                        PreparedStatement putCust = connection.prepareStatement(insCust);
-                        Random rand = new Random();
-                        int n = rand.nextInt(99999999) + 10000000;
-                        String cid = Integer.toString(n);
-                        putCust.setString(1, cid);
-                        putCust.setString(2, salutation);
-                        putCust.setString(3, fname);
-                        putCust.setString(4, lname);
-                        putCust.setString(5, cc);
-                        putCust.setString(6, expdate);
-                        putCust.setString(7, street);
-                        putCust.setString(8, city);
-                        putCust.setString(9, state);
-                        putCust.setString(10, pn);
-                        putCust.setString(11, email);
-                        putCust.executeUpdate();
+                        insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
                     }
+//                    String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
+//                    PreparedStatement checkcust = connection.prepareStatement(findCust);
+//                    checkcust.setString(1,fname);
+//                    checkcust.setString(2,lname);
+//                    ResultSet rs = checkcust.executeQuery();
+//                    if (rs.next()){ // if we got a result, then someone is already in the db
+//                        
+//                        
+//                    }
+//                    else{
+//                        insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
+//
+//                    }
                 } catch (Exception e){//(SQLException ex) {
                     // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
 					e.printStackTrace();
                 }
     }   
-    public static void findUser(Scanner scan) {
-        try {
-            System.out.println("Find User Information");
-            System.out.print("Please enter first name: ");
-            String fname = scan.nextLine();
-            System.out.print("Please enter last name: ");
-            String lname = scan.nextLine();
-            String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
-            PreparedStatement checkcust = connection.prepareStatement(findCust);
-            checkcust.setString(1, fname);
-            checkcust.setString(2, lname);
-            ResultSet rs = checkcust.executeQuery();
-            if (rs.next()) {
-                System.out.println(rs.getString(1) + " "
-                        + rs.getString(2) + " "
-                        + rs.getString(3) + " "
-                        + rs.getString(4) + " "
-                        + rs.getString(5) + " "
-                        + rs.getDate(6) + " "
-                        + rs.getString(7) + " "
-                        + rs.getString(8) + " "
-                        + rs.getString(9) + " "
-                        + rs.getString(10) + " "
-                        + rs.getString(11));
-            } else {
-                System.out.println("not found");
-            }
-        } catch (Exception e) {
-            //Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-            e.printStackTrace();
-        }
-    }
+
     
     
     public static void findPriceInfo(Scanner scan) {
