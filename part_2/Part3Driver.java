@@ -7,6 +7,11 @@ import java.io.*;
 
 public class Part3Driver{
 
+    // Strings of input files
+    private static final String loadAirlineFile = "";
+    private static final String loadFlightFile  = "";
+    private static final String loadPlaneFile   = "";
+
 
     public static void main(String[] args){
 
@@ -14,19 +19,20 @@ public class Part3Driver{
         dbinterface.connectToDB();
 
         // Call admin1 (erase the DB)
-
+        // COMMENTED OUT FOR TESTS, THIS IS DANGEROUS IF YOU'RE NOT READY FOR IT
+        // dbinterface.deleteTables(); 
 
         // Call admin2 (load airline information)
-        
+        dbinterface.importAirlines(loadAirlineFile);
 
         // Call admin3 (load schedule)
-
+        dbinterface.importFlights(loadFlightFile);
 
         // Call admin4 (load pricing)
-
+        
 
         // Call admin5 (load plane information)
-
+        dbinterface.importPlanes(loadPlaneFile);
 
         // Let's not call admin 6 just yet, as there aren't any passengers! 
         // Call user1 (add customer)
