@@ -20,10 +20,12 @@ public class Part3Driver{
 
         // Call admin1 (erase the DB)
         // COMMENTED OUT FOR TESTS, THIS IS DANGEROUS IF YOU'RE NOT READY FOR IT
+        // System.out.println("Erase the DB");
         // dbinterface.deleteTables(); 
 
         // Call admin2 (load airline information)
         try{
+            System.out.println("\nimport airlines");
             dbinterface.importAirlines(loadAirlineFile);
         } catch (Exception e1){
             System.out.println("[ERROR] admin2 " + e1);
@@ -31,6 +33,7 @@ public class Part3Driver{
 
         // Call admin3 (load schedule)
         try{
+            System.out.println("\nimport flights");
             dbinterface.importFlights(loadFlightFile);
         } catch (Exception e2){
             System.out.println("[ERROR] admin3 " + e2);
@@ -38,6 +41,7 @@ public class Part3Driver{
 
         // Call admin4 (load pricing)
         try{
+            System.out.println("\nload Pricing");
             dbinterface.importPrice(loadPrice);
         } catch (Exception e3){
             System.out.println("[ERROR] admin4 " + e3);
@@ -45,6 +49,7 @@ public class Part3Driver{
 
         // Call admin5 (load plane information)
         try{
+            System.out.println("\nload Planes");
             dbinterface.importPlanes(loadPlaneFile);
         } catch (Exception e4){
             System.out.println("[ERROR] admin5 " + e4);
