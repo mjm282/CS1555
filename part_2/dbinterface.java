@@ -35,7 +35,7 @@ public class dbinterface{
     public static void main(String[] args){
         System.out.println("hello world");
 
-
+        // establish connection
         connectToDB();
         
 
@@ -59,6 +59,8 @@ public class dbinterface{
         closeDB();
     }
 
+
+    // closes a connection to the DB
     public static void closeDB(){
         try{
             connection.close();
@@ -68,7 +70,8 @@ public class dbinterface{
         }
     }
 
-
+    
+    // creates a connection to the DB
     public static void connectToDB(){
         uname = "cas275";
         passwrd = "pitt1787";
@@ -87,13 +90,6 @@ public class dbinterface{
 
     }
 
-    // private static final String ADMIN_MENU = "1: Erase the database\n" +
-    // "2: Load airline information\n" +
-    // "3: Load schedule information\n" +
-    // "4: Load pricing information\n" +
-    // "5: Load plane information\n" +
-    // "6: Generate passenger manifest for specific flight on given day\n" +
-    // "q: Quit";
 
     public static void adminInterface(){
 
@@ -454,21 +450,7 @@ public class dbinterface{
                     else{
                         insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
                     }
-//                    String findCust = "SELECT * FROM Customer WHERE first_name = ? AND last_name = ?";
-//                    PreparedStatement checkcust = connection.prepareStatement(findCust);
-//                    checkcust.setString(1,fname);
-//                    checkcust.setString(2,lname);
-//                    ResultSet rs = checkcust.executeQuery();
-//                    if (rs.next()){ // if we got a result, then someone is already in the db
-//                        
-//                        
-//                    }
-//                    else{
-//                        insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
-//
-//                    }
                 } catch (Exception e){//(SQLException ex) {
-                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
 					e.printStackTrace();
                 }
     }   
@@ -526,7 +508,6 @@ public class dbinterface{
             }
 
         } catch (Exception e) {
-            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
             e.printStackTrace();
         }
     }
@@ -557,7 +538,6 @@ public class dbinterface{
             }
 
         } catch (Exception e) {
-            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
             e.printStackTrace();
         }
     }
@@ -625,7 +605,6 @@ public class dbinterface{
                     }
                 
                 } catch (Exception e) {
-                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
 					e.printStackTrace();
                 }
                     
@@ -671,7 +650,6 @@ public class dbinterface{
                     }
                 
                 } catch (Exception e) {
-                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
 					e.printStackTrace();
                 }
             }
@@ -700,7 +678,6 @@ public class dbinterface{
                         }
                     }
                 } catch (Exception e) {
-                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
 					e.printStackTrace();
                 }
             }
@@ -714,7 +691,6 @@ public class dbinterface{
                     updateRes.setString(1,resnum);
                     updateRes.executeUpdate();
                 } catch (Exception e) {
-                    // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
 					e.printStackTrace();
                 }
             }
