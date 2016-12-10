@@ -156,7 +156,7 @@ public class Part3Driver{
         System.out.println("\n***find route***");
         try{
             for(int i=1; i<=5; i++){
-                for(int j=1; j<=5; j++){
+                for(int j=25; j>=20; j--){
                     if(i != j){
                         System.out.println("finding from " + i + " to " + j);
                         dbinterface.findRoutesQuery((new Integer(i)).toString(), (new Integer(j)).toString());
@@ -172,13 +172,13 @@ public class Part3Driver{
         System.out.println("\n***find routes airline***");
         try{
             for(int i=1; i<=5; i++){
-                for(int j=1; j<=5; j++){
+                for(int j=25; j>=20; j--){
                     if( i != j){
                         System.out.println("finding from " + i + " to " + j);
                         System.out.println("for airline 001");
                         dbinterface.airlineRouteQuery((new Integer(i)).toString(), (new Integer(j)).toString(), "001");
-                        System.out.println("for airline 002");
-                        dbinterface.airlineRouteQuery((new Integer(i)).toString(), (new Integer(j)).toString(), "001");
+                        System.out.println("for airline 003");
+                        dbinterface.airlineRouteQuery((new Integer(i)).toString(), (new Integer(j)).toString(), "003");
                     }
                 }
             }
