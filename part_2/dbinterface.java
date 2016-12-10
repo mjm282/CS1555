@@ -138,6 +138,7 @@ public class dbinterface{
 					{
 						System.out.println("Please enter full path to pricing information");
 						String priceFile = adminScan.next();
+						importPrice(priceFile);
 						
 					}
 					else if(priceChoice.equals("C"))
@@ -626,13 +627,16 @@ public class dbinterface{
     public static void availableSeatQuery(String origin, String dest, String ds) {
         try {
             Calendar c = Calendar.getInstance();
-            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-            java.util.Date date = formatter.parse(ds);
+            // DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("MM/DD/YYYY");
+            java.sql.Date date = new java.sql.Date (formatter.parse(ds).getTime());
             c.setTime(date);
-            String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time,weekly_schedule FROM Flight WHERE departure_city = ? AND arrival_city = ?";
+			//gets the count of reservations that fit the flight number
+			String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = ?))";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
             findDirect.setString(2, dest);
+			findDirect.setDate(3, date);
             ResultSet rs = findDirect.executeQuery();
             while (rs.next()) {
                 String schedule = rs.getString("weekly_schedule");
@@ -663,7 +667,7 @@ public class dbinterface{
         String origin = scan.next();
         System.out.print("Please enter destination city: ");
         String dest = scan.next();
-        System.out.print("Please enter airline: ");
+        // System.out.print("Please enter airline: ");
 //        String airline = scan.next();
         System.out.print("Please enter a date:");
         String ds = scan.next();
