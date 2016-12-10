@@ -553,15 +553,8 @@ public class dbinterface{
             findPriceQuery(origin,dest);
             
     }
-    
-    public static void findRoutes(Scanner scan) {
+    public static void findRoutesQuery(String origin, String dest){
         try {
-            //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
-            System.out.println("Find Routes");
-            System.out.print("Please enter origin city: ");
-            String origin = scan.next();
-            System.out.print("Please enter destination city: ");
-            String dest = scan.next();
             String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ?";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
@@ -578,11 +571,18 @@ public class dbinterface{
             while (rs.next()) {
                 System.out.println(rs);
             }
-
-        } catch (Exception e) {
-            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public static void findRoutes(Scanner scan) {
+            //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
+            System.out.println("Find Routes");
+            System.out.print("Please enter origin city: ");
+            String origin = scan.next();
+            System.out.print("Please enter destination city: ");
+            String dest = scan.next();
+            findRoutesQuery(origin,dest);
     }
         
    
