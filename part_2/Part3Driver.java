@@ -82,7 +82,7 @@ public class Part3Driver{
             String email = fname + "@" + lname + ".com";
 
             // ok, enough fun, let's add them back to the DB
-            insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
+            dbinterface.insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
 
         }
 
