@@ -37,7 +37,11 @@ public class Part3Driver{
         }
 
         // Call admin4 (load pricing)
-        dbinterface.importPrice(loadPrice);
+        try{
+            dbinterface.importPrice(loadPrice);
+        } catch (Exception e3){
+            System.out.println("[ERROR] admin4 " + e3);
+        }
 
         // Call admin5 (load plane information)
         try{
