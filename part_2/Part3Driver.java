@@ -205,7 +205,7 @@ public class Part3Driver{
             System.out.println("TODO");
 
         } catch (Exception e11){
-            System.out.println("[ERROR] user7 " + e);
+            System.out.println("[ERROR] user7 " + e11);
         }
 
         // Call user8 (add reservation)
@@ -215,7 +215,7 @@ public class Part3Driver{
             //TODO
             System.out.println("TODO");
         } catch (Exception e12){
-            System.out.println("[ERROR] user8 " + e);
+            System.out.println("[ERROR] user8 " + e12);
         }
 
         // Call user 9 (show reservation infor)
