@@ -472,16 +472,8 @@ public class dbinterface{
 					e.printStackTrace();
                 }
     }   
-
-    
-    
-    public static void findPriceInfo(Scanner scan) {
+    public static void findPriceQuery(String origin, String dest) {
         try {
-            System.out.println("Find Price Information");
-            System.out.print("Please enter origin city: ");
-            String origin = scan.next();
-            System.out.print("Please enter destination city: ");
-            String dest = scan.next();
             String findprice = "SELECT high_price, low_price FROM Price WHERE departure_city = ? AND arrival_city = ?";
             PreparedStatement getPrice = connection.prepareStatement(findprice);
             getPrice.setString(1, origin);
@@ -524,21 +516,45 @@ public class dbinterface{
                 output = String.format("The low price for a round trip from %s to %s is %d", origin, dest, low_round);
                 System.out.println(output);
             }
-
-        } catch (Exception e) {
-            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-            e.printStackTrace();
+            getPrice = connection.prepareStatement(findprice);
+            getPrice.setString(1, dest);
+            getPrice.setString(2, origin);
+            rs = getPrice.executeQuery();
+            while (rs.next()) {
+                high_price_from = rs.getString("high_price");
+                low_price_from = rs.getString("low_price");
+                output = String.format("The high cost from %s to %s is %s", dest, origin, high_price_from);
+                System.out.println(output);
+                output = String.format("The low cost from %s to %s is %s", dest, origin, low_price_from);
+                System.out.println(output);
+                from = true;
+            }
+            if (to && from) {
+                int high_round = Integer.valueOf(high_price_to) + Integer.valueOf(high_price_from);
+                int low_round = Integer.valueOf(low_price_to) + Integer.valueOf(low_price_from);
+                output = String.format("The high price for a round trip from %s to %s is %d", origin, dest, high_round);
+                System.out.println(output);
+                output = String.format("The low price for a round trip from %s to %s is %d", origin, dest, low_round);
+                System.out.println(output);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
     
-    public static void findRoutes(Scanner scan) {
-        try {
-            //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
-            System.out.println("Find Routes");
+    
+    public static void findPriceInfo(Scanner scan) {
+            System.out.println("Find Price Information");
             System.out.print("Please enter origin city: ");
             String origin = scan.next();
             System.out.print("Please enter destination city: ");
             String dest = scan.next();
+            findPriceQuery(origin,dest);
+            
+    }
+    public static void findRoutesQuery(String origin, String dest){
+        try {
             String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ?";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
@@ -555,11 +571,18 @@ public class dbinterface{
             while (rs.next()) {
                 System.out.println(rs);
             }
-
-        } catch (Exception e) {
-            // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public static void findRoutes(Scanner scan) {
+            //select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id;
+            System.out.println("Find Routes");
+            System.out.print("Please enter origin city: ");
+            String origin = scan.next();
+            System.out.print("Please enter destination city: ");
+            String dest = scan.next();
+            findRoutesQuery(origin,dest);
     }
         
    
