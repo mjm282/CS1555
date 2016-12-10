@@ -574,6 +574,8 @@ public class dbinterface{
             findIndirect.setString(1, origin);
             findIndirect.setString(2, dest);
             rs = findIndirect.executeQuery();
+			rsmd = rs.getMetaData();
+			cols = rsmd.getColumnCount();
             while (rs.next()) {
 				for(int i = 1; i <= cols; i++){
 					System.out.print(rs.getString(i) + " ");
@@ -616,6 +618,8 @@ public class dbinterface{
             findIndirect.setString(2, dest);
             findIndirect.setString(3, airline);
             rs = findIndirect.executeQuery();
+			rsmd = rs.getMetaData();
+			cols = rsmd.getColumnCount();
             while (rs.next()) {
 				for(int i = 1; i <= cols; i++){
 					System.out.print(rs.getString(i) + " ");
@@ -674,6 +678,8 @@ public class dbinterface{
 			findIndirect.setDate(3, date);
 			findIndirect.setDate(4, date);
             rs = findIndirect.executeQuery();
+			rsmd = rs.getMetaData();
+			cols = rsmd.getColumnCount();
             while (rs.next()) {
 				for(int i = 1; i <= cols; i++){
 					System.out.print(rs.getString(i) + " ");
@@ -733,6 +739,8 @@ public class dbinterface{
 		findIndirect.setDate(3, date);
 		findIndirect.setDate(4, date);
 		rs = findIndirect.executeQuery();
+		rsmd = rs.getMetaData();
+		cols = rsmd.getColumnCount();
 		while (rs.next()) {
 			for(int i = 1; i <= cols; i++){
 				System.out.print(rs.getString(i) + " ");
