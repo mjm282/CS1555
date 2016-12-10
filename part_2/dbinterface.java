@@ -738,7 +738,30 @@ public class dbinterface{
         String resnum = scan.next();
         buyTicketQuery(resnum);
     }
+    public static void reservationQuery(String flightnum, String date){
+        try{
+            String resquery = "SELECT * FROM Flight WHERE flight_number = ?";
+            PreparedStatement checkFlight = connection.prepareStatement(resquery);
+            checkFlight.setString(1, flightnum);
+            ResultSet rs = checkFlight.executeQuery();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public static void addReservation(Scanner scan){
+        System.out.println("Make Reservation");
+        String flightnum = "";
+        String flightdate = "";
+        int numLegs = 0;
+        while(flightnum != "0" && numLegs <=4){
+            System.out.print("Enter Flight Number: ");
+            flightnum = scan.nextLine();
+            System.out.print("Enter Flight Date: ");
+            flightdate = scan.nextLine();
+            reservationQuery(flightnum, flightdate);
+            numLegs++;
+        }
         
     }
     public static void userInterface() {//throws ParseException{
