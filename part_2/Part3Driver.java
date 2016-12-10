@@ -127,10 +127,12 @@ public class Part3Driver{
         // This one is harder to loop, unless our city names are number that increment by 1
         // We should do this one 10+ times
         // and should print expected result too
+        System.out.println("\nfind prices");
         try{
             for(int i=1; i<=5; i++){
                 for(int j=1; j<=5; j++){
                     if(i != j){
+                        System.out.println("finding from " + i + " to " + j);
                         dbinterface.findPriceQuery((new Integer(i)).toString(), (new Integer(j)).toString());
                     }
                 }
@@ -143,10 +145,12 @@ public class Part3Driver{
         // Very similar to the one above 
         // once again 10+
         // and print the expected result too
+        System.out.println("\nfind route");
         try{
-            for(int i=0; i<=5; i++){
-                for(int j=0; j<=5; j++){
+            for(int i=1; i<=5; i++){
+                for(int j=1; j<=5; j++){
                     if(i != j){
+                        System.out.println("finding from " + i + " to " + j);
                         dbinterface.findRoutesQuery((new Integer(i)).toString(), (new Integer(j)).toString());
                     }
                 }
@@ -157,7 +161,22 @@ public class Part3Driver{
 
         // Call user5 (find all routes between 2 cities for a given airline)
         // Let's call this one twice for each airline
-
+        System.out.println("\nfind routes airline");
+        try{
+            for(int i=1; i<=5; i++){
+                for(int j=1; j<=5; j++){
+                    if( i != j){
+                        System.out.println("finding from " + i + " to " + j);
+                        System.out.println("for airline 001");
+                        dbinterface.airlineRouteQuery((new Integer(i)).toString(), (new Integer(j)).toString(), "001");
+                        System.out.println("for airline 002");
+                        dbinterface.airlineRouteQuery((new Integer(i)).toString(), (new Integer(j)).toString(), "001");
+                    }
+                }
+            }
+        } catch (Exception e9){
+            System.out.println("[ERROR] cust5 " + e9);
+        }
 
         // Call user6 (find all routes with seats on a given day)
         // Let's call this 10 time now, with no reservations, and call again later
