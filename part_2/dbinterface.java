@@ -819,10 +819,13 @@ public class dbinterface{
     }
     public static void reservationQuery(String flightnum, String date){
         try{
-            String resquery = "SELECT * FROM Flight WHERE flight_number = ?";
+            String resquery = "SELECT COUNT(reservation_number) FROM Reservation_details WHERE flight_number = ?";
             PreparedStatement checkFlight = connection.prepareStatement(resquery);
             checkFlight.setString(1, flightnum);
             ResultSet rs = checkFlight.executeQuery();
+            int seatsTaken = rs.getInt("total");
+            //SELECT CAPACITY FROM PLANE JOIN FLIGHT ON PLANE_TYPE
+            //COOMPARE TO SEATSTAKEN AND THEN ADD LEG TO RESERVATION IF <
         }
         catch (Exception e){
             e.printStackTrace();
