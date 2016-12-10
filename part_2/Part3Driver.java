@@ -91,7 +91,7 @@ public class Part3Driver{
 
         for(int i=0; i<20; i++){
             System.out.println("finding customer " + i);
-            if(dbinterface.findUserQuery((new Integer(i)).toString(), (new Integer(i)).toString)){
+            if(dbinterface.findUserQuery((new Integer(i)).toString(), (new Integer(i)).toString())){
                 System.out.println("found");
             } else{
                 System.out.println("[ERROR] could not find user " + i);
