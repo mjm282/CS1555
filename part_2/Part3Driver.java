@@ -123,7 +123,7 @@ public class Part3Driver{
             System.out.println("[ERROR] cust2 " + e6);
         }
 
-        // Call user3 (find flights between 2 cities)
+        // Call user3 (find prices between 2 cities)
         // This one is harder to loop, unless our city names are number that increment by 1
         // We should do this one 10+ times
         // and should print expected result too
@@ -143,7 +143,7 @@ public class Part3Driver{
         // Very similar to the one above 
         // once again 10+
         // and print the expected result too
-
+        try
 
         // Call user5 (find all routes between 2 cities for a given airline)
         // Let's call this one twice for each airline
