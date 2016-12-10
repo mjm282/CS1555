@@ -9,7 +9,7 @@ public class Part3Driver{
 
     // Strings of input files
     private static final String loadAirlineFile = "airlines.csv";
-    private static final String loadFlightFile  = "";
+    private static final String loadFlightFile  = "flights.csv";
     private static final String loadPlaneFile   = "planes.csv";
     private static final String loadPrice       = "prices.csv";
 
