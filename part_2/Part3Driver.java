@@ -8,10 +8,10 @@ import java.io.*;
 public class Part3Driver{
 
     // Strings of input files
-    private static final String loadAirlineFile = "";
+    private static final String loadAirlineFile = "airlines.csv";
     private static final String loadFlightFile  = "";
-    private static final String loadPlaneFile   = "";
-    private static final String loadPrice       = "";
+    private static final String loadPlaneFile   = "planes.csv";
+    private static final String loadPrice       = "prices.csv";
 
     public static void main(String[] args){
 
