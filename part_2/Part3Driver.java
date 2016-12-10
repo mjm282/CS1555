@@ -143,7 +143,17 @@ public class Part3Driver{
         // Very similar to the one above 
         // once again 10+
         // and print the expected result too
-        try
+        try{
+            for(int i=0; i<=5; i++){
+                for(int j=0; j<=5; j++){
+                    if(i != j){
+                        dbinterface.findRoutesQuery((new Integer(i)).toString(), (new Integer(j)).toString());
+                    }
+                }
+            }
+        } catch (Exception e8){
+            System.out.println("[ERROR] cust4 " + e8);
+        }
 
         // Call user5 (find all routes between 2 cities for a given airline)
         // Let's call this one twice for each airline
