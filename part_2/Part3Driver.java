@@ -11,7 +11,7 @@ public class Part3Driver{
     private static final String loadAirlineFile = "airlines.csv";
     private static final String loadFlightFile  = "flights.csv";
     private static final String loadPlaneFile   = "planes.csv";
-    private static final String loadPrice       = "prices.csv";
+    private static final String loadPrice       = "price.csv";
 
     public static void main(String[] args){
 
