@@ -127,8 +127,18 @@ public class Part3Driver{
         // This one is harder to loop, unless our city names are number that increment by 1
         // We should do this one 10+ times
         // and should print expected result too
-
-
+        try{
+            for(int i=1; i<=5; i++){
+                for(int j=1; j<=5; j++){
+                    if(i != j){
+                        dbinterface.findPriceQuery((new Integer(i)).toString(), (new Integer(j)).toString());
+                    }
+                }
+            }
+        } catch (Exception e7){
+            System.out.println("[ERROR] cust3 " + e7);
+        }
+        
         // Call user4 (find all routes between 2 cities)
         // Very similar to the one above 
         // once again 10+
