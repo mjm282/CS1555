@@ -11,7 +11,7 @@ public class Part3Driver{
     private static final String loadAirlineFile = "";
     private static final String loadFlightFile  = "";
     private static final String loadPlaneFile   = "";
-
+    private static final String loadPrice       = "";
 
     public static void main(String[] args){
 
@@ -37,7 +37,7 @@ public class Part3Driver{
         }
 
         // Call admin4 (load pricing)
-
+        dbinterface.importPrice(loadPrice);
 
         // Call admin5 (load plane information)
         try{
