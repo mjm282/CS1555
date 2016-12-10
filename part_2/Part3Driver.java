@@ -40,7 +40,49 @@ public class Part3Driver{
 
         for(int i=0; i<50; i++){
             // we can just use a toString of i to make names, we don't really care who our custs are
+            // let's make up an evenly distributed salutation
+            String salutation;
+            if(i%3 == 0){
+                salutation = "Mr";
+            } else if(i%3 == 2){
+                salutation = "Mrs";
+            }
+            else{
+                salutation = "Ms";
+            }
 
+            // let's make numerical based name
+            String fname = (new Integer(i)).toString();
+            String lname = fname;
+
+            // yes, the credit card number is 1
+            String cc = "1";
+            
+            // wow, everyone's credit cards have expired . . .
+            String expdate = "01-MAY-01";   
+
+            // huh, everyone lives at a different house on the same street
+            String street = fname + " " + "first street";
+
+            // ewww, cleveland
+            String city;
+            String state;
+            if(i%2 == 0){
+                city = "Pittsburgh";
+                state = "PA";
+            } else{
+                city = "Cleveland";
+                state = "OH";
+            }
+
+            // that phone number looks fake...
+            String pn = "5555551234";
+
+            // looks like everyone has their own email domain.  Cool
+            String email = fname + "@" + lname + ".com";
+
+            // ok, enough fun, let's add them back to the DB
+            insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
 
         }
 
