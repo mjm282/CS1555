@@ -648,26 +648,26 @@ public class dbinterface{
         try {
             Calendar c = Calendar.getInstance();
             // DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("MM/DD/YYYY");
-            java.sql.Date date = new java.sql.Date (formatter.parse(ds).getTime());
+            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("MM/DD/YYYY");
+            java.sql.Date date = new java.sql.Date(formatter.parse(ds).getTime());
             c.setTime(date);
-			//gets the count of reservations that fit the flight number
-			String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = ?))";
+            //gets the count of reservations that fit the flight number
+            String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = ?))";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
             findDirect.setString(2, dest);
-			findDirect.setDate(3, date);
+            findDirect.setDate(3, date);
             ResultSet rs = findDirect.executeQuery();
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int cols = rsmd.getColumnCount();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int cols = rsmd.getColumnCount();
             while (rs.next()) {
                 String schedule = rs.getString("weekly_schedule");
                 int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
                 if (!(schedule.charAt(dayOfWeek - 1) == '-')) {
-					for(int i = 1; i <= cols; i++){
-					System.out.print(rs.getString(i) + " ");
-					}
-					System.out.println();
+                    for (int i = 1; i <= cols; i++) {
+                        System.out.print(rs.getString(i) + " ");
+                    }
+                    System.out.println();
                 }
 
             }
@@ -675,16 +675,16 @@ public class dbinterface{
             PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
             findIndirect.setString(1, origin);
             findIndirect.setString(2, dest);
-			findIndirect.setDate(3, date);
-			findIndirect.setDate(4, date);
+            findIndirect.setDate(3, date);
+            findIndirect.setDate(4, date);
             rs = findIndirect.executeQuery();
-			rsmd = rs.getMetaData();
-			cols = rsmd.getColumnCount();
+            rsmd = rs.getMetaData();
+            cols = rsmd.getColumnCount();
             while (rs.next()) {
-				for(int i = 1; i <= cols; i++){
-					System.out.print(rs.getString(i) + " ");
-				}
-				System.out.println();
+                for (int i = 1; i <= cols; i++) {
+                    System.out.print(rs.getString(i) + " ");
+                }
+                System.out.println();
             }
 
         } catch (Exception e) {
