@@ -817,7 +817,44 @@ public class dbinterface{
         String resnum = scan.next();
         buyTicketQuery(resnum);
     }
+    public static void reservationQuery(String flightnum, String date, Integer legnum){
+        try{
+            String resquery = "SELECT COUNT(reservation_number) FROM Reservation_details WHERE flight_number = ?";
+            PreparedStatement checkFlight = connection.prepareStatement(resquery);
+            checkFlight.setString(1, flightnum);
+            ResultSet rs = checkFlight.executeQuery();
+            int seatsTaken = rs.getInt("total");
+            //SELECT CAPACITY FROM PLANE JOIN FLIGHT ON PLANE_TYPE
+            //COOMPARE TO SEATSTAKEN AND THEN ADD LEG TO RESERVATION IF <
+            String resnumQuery = "SELECT reservation_number FROM Reservation ORDER BY DESC LIMI 1";
+            PreparedStatement getResNum = connection.prepareStatement(resnumQuery);
+            ResultSet rn = getResNum.executeQuery();
+            int high_rn = Integer.valueOf(rn.getString("reservation_number"));
+            String new_rn = Integer.toString(high_rn+1);
+            String addLegQuery = "INSERT INTO Reservation_details VALUES(?,?,?,?)";
+            PreparedStatement addLeg = connection.prepareStatement(addLegQuery);
+            addLeg.setString(1, new_rn);
+            addLeg.setString(2,flightnum);
+            addLeg.setString(3,date);
+            addLeg.setInt(4,legnum);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public static void addReservation(Scanner scan){
+        System.out.println("Make Reservation");
+        String flightnum = "";
+        String flightdate = "";
+        int numLegs = 0;
+        while(flightnum != "0" && numLegs <=4){
+            System.out.print("Enter Flight Number: ");
+            flightnum = scan.nextLine();
+            System.out.print("Enter Flight Date: ");
+            flightdate = scan.nextLine();
+            reservationQuery(flightnum, flightdate);
+            numLegs++;
+        }
         
     }
     public static void userInterface() {//throws ParseException{
