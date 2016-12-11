@@ -775,17 +775,17 @@ public class dbinterface{
             PreparedStatement findlegs = connection.prepareStatement(resquery);
             findlegs.setString(1, resnum);
             ResultSet rs = findlegs.executeQuery();
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int cols = rsmd.getColumnCount();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int cols = rsmd.getColumnCount();
             if (!rs.next()) {
                 System.out.println("Sorry, that wasn't a valid reservation number.");
             } else {
                 while (rs.next()) {
-					for(int i = 1; i <= cols; i++){
-						System.out.print(rs.getString(i) + " ");
-					}
-					System.out.println();
-					}
+                    for (int i = 1; i <= cols; i++) {
+                        System.out.print(rs.getString(i) + " ");
+                    }
+                    System.out.println();
+                }
             }
         } catch (Exception e) {
             // Logger.getLogger(dbinterface.class.getName()).log(Level.SEVERE, null, ex);
@@ -854,7 +854,7 @@ public class dbinterface{
             flightnum = scan.nextLine();
             System.out.print("Enter Flight Date: ");
             flightdate = scan.nextLine();
-            reservationQuery(flightnum, flightdate);
+            reservationQuery(flightnum, flightdate, numLegs);
             numLegs++;
         }
         
