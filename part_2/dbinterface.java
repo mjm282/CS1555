@@ -817,7 +817,7 @@ public class dbinterface{
         String resnum = scan.next();
         buyTicketQuery(resnum);
     }
-    public static void reservationQuery(String flightnum, String date){
+    public static void reservationQuery(String flightnum, String date, Integer legnum){
         try{
             String resquery = "SELECT COUNT(reservation_number) FROM Reservation_details WHERE flight_number = ?";
             PreparedStatement checkFlight = connection.prepareStatement(resquery);
@@ -826,6 +826,17 @@ public class dbinterface{
             int seatsTaken = rs.getInt("total");
             //SELECT CAPACITY FROM PLANE JOIN FLIGHT ON PLANE_TYPE
             //COOMPARE TO SEATSTAKEN AND THEN ADD LEG TO RESERVATION IF <
+            String resnumQuery = "SELECT reservation_number FROM Reservation ORDER BY DESC LIMI 1";
+            PreparedStatement getResNum = connection.prepareStatement(resnumQuery);
+            ResultSet rn = getResNum.executeQuery();
+            int high_rn = Integer.valueOf(rn.getString("reservation_number"));
+            String new_rn = Integer.toString(high_rn+1);
+            String addLegQuery = "INSERT INTO Reservation_details VALUES(?,?,?,?)";
+            PreparedStatement addLeg = connection.prepareStatement(addLegQuery);
+            addLeg.setString(1, new_rn);
+            addLeg.setString(2,flightnum);
+            addLeg.setString(3,date);
+            addLeg.setInt(4,legnum);
         }
         catch (Exception e){
             e.printStackTrace();
