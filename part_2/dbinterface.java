@@ -648,8 +648,8 @@ public class dbinterface{
         try {
             Calendar c = Calendar.getInstance();
             // DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("MM/DD/YYYY");
-            java.sql.Date date = new java.sql.Date (formatter.parse(ds).getTime());
+            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("MM/DD/YYYY");
+            java.sql.Date date = new java.sql.Date(formatter.parse(ds).getTime());
             c.setTime(date);
 			//gets the count of reservations that fit the flight number
 			String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY'))";
@@ -658,16 +658,16 @@ public class dbinterface{
             findDirect.setString(2, dest);
 			findDirect.setString(3, ds);
             ResultSet rs = findDirect.executeQuery();
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int cols = rsmd.getColumnCount();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int cols = rsmd.getColumnCount();
             while (rs.next()) {
                 String schedule = rs.getString("weekly_schedule");
                 int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
                 if (!(schedule.charAt(dayOfWeek - 1) == '-')) {
-					for(int i = 1; i <= cols; i++){
-					System.out.print(rs.getString(i) + " ");
-					}
-					System.out.println();
+                    for (int i = 1; i <= cols; i++) {
+                        System.out.print(rs.getString(i) + " ");
+                    }
+                    System.out.println();
                 }
 
             }
@@ -678,13 +678,13 @@ public class dbinterface{
 			findIndirect.setString(3, ds);
 			findIndirect.setString(4, ds);
             rs = findIndirect.executeQuery();
-			rsmd = rs.getMetaData();
-			cols = rsmd.getColumnCount();
+            rsmd = rs.getMetaData();
+            cols = rsmd.getColumnCount();
             while (rs.next()) {
-				for(int i = 1; i <= cols; i++){
-					System.out.print(rs.getString(i) + " ");
-				}
-				System.out.println();
+                for (int i = 1; i <= cols; i++) {
+                    System.out.print(rs.getString(i) + " ");
+                }
+                System.out.println();
             }
 
         } catch (Exception e) {
@@ -819,28 +819,35 @@ public class dbinterface{
         String resnum = scan.next();
         buyTicketQuery(resnum);
     }
-    public static void reservationQuery(String flightnum, String date, Integer legnum){
-        try{
+    public static void reservationQuery(String flightnum, String date, Integer legnum) {
+        try {
             String resquery = "SELECT COUNT(reservation_number) FROM Reservation_details WHERE flight_number = ?";
             PreparedStatement checkFlight = connection.prepareStatement(resquery);
             checkFlight.setString(1, flightnum);
             ResultSet rs = checkFlight.executeQuery();
             int seatsTaken = rs.getInt("total");
-            //SELECT CAPACITY FROM PLANE JOIN FLIGHT ON PLANE_TYPE
-            //COOMPARE TO SEATSTAKEN AND THEN ADD LEG TO RESERVATION IF <
-            String resnumQuery = "SELECT reservation_number FROM Reservation ORDER BY DESC LIMI 1";
-            PreparedStatement getResNum = connection.prepareStatement(resnumQuery);
-            ResultSet rn = getResNum.executeQuery();
-            int high_rn = Integer.valueOf(rn.getString("reservation_number"));
-            String new_rn = Integer.toString(high_rn+1);
-            String addLegQuery = "INSERT INTO Reservation_details VALUES(?,?,?,?)";
-            PreparedStatement addLeg = connection.prepareStatement(addLegQuery);
-            addLeg.setString(1, new_rn);
-            addLeg.setString(2,flightnum);
-            addLeg.setString(3,date);
-            addLeg.setInt(4,legnum);
-        }
-        catch (Exception e){
+            String seatlimit = "SELECT plane_capacity FROM Plane NATURAL JOIN Flight WHERE Flight.flight_number = ?";
+            PreparedStatement seatlimitQuery = connection.prepareStatement(seatlimit);
+            seatlimitQuery.setString(1, flightnum);
+            ResultSet sl = seatlimitQuery.executeQuery();
+            int limit = sl.getInt("plane_capacity");
+            if (seatsTaken < limit) {
+                String resnumQuery = "SELECT reservation_number FROM Reservation ORDER BY DESC LIMI 1";
+                PreparedStatement getResNum = connection.prepareStatement(resnumQuery);
+                ResultSet rn = getResNum.executeQuery();
+                int high_rn = Integer.valueOf(rn.getString("reservation_number"));
+                String new_rn = Integer.toString(high_rn + 1);
+                String addLegQuery = "INSERT INTO Reservation_details VALUES(?,?,?,?)";
+                PreparedStatement addLeg = connection.prepareStatement(addLegQuery);
+                addLeg.setString(1, new_rn);
+                addLeg.setString(2, flightnum);
+                addLeg.setString(3, date);
+                addLeg.setInt(4, legnum);
+            }
+            else{
+                System.out.println("Sorry, there are no seats available for flight "+flightnum);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
