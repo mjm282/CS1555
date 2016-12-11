@@ -652,7 +652,7 @@ public class dbinterface{
             java.sql.Date date = new java.sql.Date(formatter.parse(ds).getTime());
             c.setTime(date);
 			//gets the count of reservations that fit the flight number
-			String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY'))";
+			String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
             findDirect.setString(2, dest);
@@ -803,7 +803,7 @@ public class dbinterface{
     public static void buyTicketQuery(String resnum) {
         try {
 
-            String resquery = "UPDATE Reservation SET tickted = 1 WHERE reservation_number = ?";
+            String resquery = "UPDATE Reservation SET ticketed = 1 WHERE reservation_number = ?";
             PreparedStatement updateRes = connection.prepareStatement(resquery);
             updateRes.setString(1, resnum);
             updateRes.executeUpdate();
