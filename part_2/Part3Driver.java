@@ -207,7 +207,7 @@ public class Part3Driver{
         System.out.println("\n***find airline routes w/ seats***");
         try{
             //TODO
-            System.out.println("TODO");
+            dbinterface.availableSeatAirlineQuery("1","25","003","12/14/16");
 
         } catch (Exception e11){
             System.out.println("[ERROR] user7 " + e11);
@@ -218,7 +218,7 @@ public class Part3Driver{
         System.out.println("\n***add reservation***");
         try{
             //TODO
-            System.out.println("TODO");
+
         } catch (Exception e12){
             System.out.println("[ERROR] user8 " + e12);
         }
