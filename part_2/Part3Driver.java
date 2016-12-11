@@ -196,7 +196,19 @@ public class Part3Driver{
         System.out.println("\n***find routes w/ seats***");
         try{
             //TODO
+            System.out.println("looking for routes from 1->25 which runs on Wed,Fri, Sat");
             dbinterface.availableSeatQuery("1", "25", "12/14/16");
+            dbinterface.availableSeatQuery("1", "25", "12/15/16");
+            dbinterface.availableSeatQuery("1", "25", "12/16/16");
+            dbinterface.availableSeatQuery("1", "25", "12/17/16");
+            dbinterface.availableSeatQuery("1", "25", "12/18/16");
+            dbinterface.availableSeatQuery("1", "25", "12/19/16");
+            dbinterface.availableSeatQuery("1", "25", "12/20/16");
+
+            System.out.println("looking for 2->12");
+            dbinterface.availableSeatQuery("2", "12", "12/14/16");
+            System.out.println("looking for 2->16");
+            dbinterface.availableSeatQuery("2", "16", "12/14/16");
 
         } catch (Exception e10){
             System.out.println("[ERROR] user6 " + e10);
@@ -269,6 +281,7 @@ public class Part3Driver{
         try{
             //TODO
             dbinterface.printManifest("1", "12/14/2016");
+            dbinterface.printManifest("2", "12/14/2016");
         } catch (Exception e17){
             System.out.println("[ERROR] admin6 " + e17);
         }
