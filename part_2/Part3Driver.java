@@ -241,7 +241,10 @@ public class Part3Driver{
         System.out.println("\n***show reservation info***");
         try{
             //TODO
-            System.out.println("TODO");
+            dbinterface.reservationQuery("1");
+            dbinterface.reservationQuery("2");
+            dbinterface.reservationQuery("3");
+            dbinterface.reservationQuery("4");
         } catch (Exception e13){
             System.out.println("[ERROR] user9 " + e13);
         }
@@ -274,7 +277,8 @@ public class Part3Driver{
         System.out.println("\n***find all airline routes w/ seats, again***");
         try{
             //TODO
-            System.out.println("TODO");
+            dbinterface.availableSeatAirlineQuery("1","25","003","12/14/16");
+            dbinterface.availableSeatAirlineQuery("2", "12", "002","12/14/16");
         } catch (Exception e15){
             System.out.println("[ERROR] user7 " + e15);
         }
@@ -285,6 +289,10 @@ public class Part3Driver{
         try{
             //TODO
             dbinterface.buyTicketQuery("1");
+            dbinterface.buyTicketQuery("2");
+            dbinterface.buyTicketQuery("3");
+            dbinterface.buyTicketQuery("4");
+
         } catch (Exception e16){
             System.out.println("[ERROR] user0 " + e16);
         }
