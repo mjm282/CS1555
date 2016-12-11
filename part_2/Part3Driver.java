@@ -220,7 +220,7 @@ public class Part3Driver{
         try{
             //TODO
             dbinterface.availableSeatAirlineQuery("1","25","003","12/14/16");
-            dbinterface.availableSeatQuery("2", "12", "002","12/14/16");
+            dbinterface.availableSeatAirlineQuery("2", "12", "002","12/14/16");
 
         } catch (Exception e11){
             System.out.println("[ERROR] user7 " + e11);
