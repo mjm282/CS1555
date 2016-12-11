@@ -14,7 +14,7 @@ public class Part3Driver{
     private static final String loadPrice       = "price.csv";
 
     public static void main(String[] args){
-        
+
         System.out.println("==================================================================================");
         System.out.println("                             starting tests                                       ");
         System.out.println("==================================================================================");
@@ -24,8 +24,12 @@ public class Part3Driver{
 
         // Call admin1 (erase the DB)
         // COMMENTED OUT FOR TESTS, THIS IS DANGEROUS IF YOU'RE NOT READY FOR IT
-        // System.out.println("Erase the DB");
-        // dbinterface.deleteTables(); 
+        System.out.println("***Erase the DB***");
+        try{
+            dbinterface.deleteTables(); 
+        } catch (Exception e){
+            System.out.println("[ERROR] admin1 " + e);
+        }
 
         // Call admin2 (load airline information)
         try{
@@ -33,6 +37,14 @@ public class Part3Driver{
             dbinterface.importAirlines(loadAirlineFile);
         } catch (Exception e1){
             System.out.println("[ERROR] admin2 " + e1);
+        }
+
+        // Call admin5 (load plane information)
+        try{
+            System.out.println("\n***load Planes***");
+            dbinterface.importPlanes(loadPlaneFile);
+        } catch (Exception e4){
+            System.out.println("[ERROR] admin5 " + e4);
         }
 
         // Call admin3 (load schedule)
@@ -51,13 +63,6 @@ public class Part3Driver{
             System.out.println("[ERROR] admin4 " + e3);
         }
 
-        // Call admin5 (load plane information)
-        try{
-            System.out.println("\n***load Planes***");
-            dbinterface.importPlanes(loadPlaneFile);
-        } catch (Exception e4){
-            System.out.println("[ERROR] admin5 " + e4);
-        }
 
         // Let's not call admin 6 just yet, as there aren't any passengers! 
         // Call user1 (add customer)
@@ -148,7 +153,7 @@ public class Part3Driver{
         } catch (Exception e7){
             System.out.println("[ERROR] cust3 " + e7);
         }
-        
+
         // Call user4 (find all routes between 2 cities)
         // Very similar to the one above 
         // once again 10+
@@ -191,7 +196,7 @@ public class Part3Driver{
         System.out.println("\n***find routes w/ seats***");
         try{
             //TODO
-            System.out.println("TODO");
+            dbinterface.availableSeatQuery("1", "25", "12/14/16");
 
         } catch (Exception e10){
             System.out.println("[ERROR] user6 " + e10);
@@ -253,7 +258,7 @@ public class Part3Driver{
         System.out.println("\n***buy tickets***");
         try{
             //TODO
-            System.out.println("TODO");
+            dbinterface.buyTicketQuery("1");
         } catch (Exception e16){
             System.out.println("[ERROR] user0 " + e16);
         }
@@ -263,7 +268,7 @@ public class Part3Driver{
         System.out.println("\n***mainifest***");
         try{
             //TODO
-            System.out.println("TODO");
+            dbinterface.printManifest("1", "12/14/2016");
         } catch (Exception e17){
             System.out.println("[ERROR] admin6 " + e17);
         }
