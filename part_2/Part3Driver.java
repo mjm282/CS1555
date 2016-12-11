@@ -171,8 +171,8 @@ public class Part3Driver{
         // Let's call this one twice for each airline
         System.out.println("\n***find routes airline***");
         try{
-            for(int i=1; i<=5; i++){
-                for(int j=25; j>=20; j--){
+            for(int i=1; i<=4; i++){
+                for(int j=25; j>=23; j--){
                     if( i != j){
                         System.out.println("finding from " + i + " to " + j);
                         System.out.println("for airline 001");
