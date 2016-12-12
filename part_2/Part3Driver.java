@@ -231,7 +231,11 @@ public class Part3Driver{
         System.out.println("\n***add reservation***");
         try{
             //TODO
-
+            dbinterface.reservationQuery("1", "2", "12/14/16", 1);
+            dbinterface.reservationQuery("2", "2", "12/14/16", 1);
+            dbinterface.reservationQuery("3", "2", "12/14/16", 1);
+            dbinterface.reservationQuery("4", "2", "12/14/16", 1);
+            dbinterface.reservationQuery("5", "2", "12/14/16", 1);
         } catch (Exception e12){
             System.out.println("[ERROR] user8 " + e12);
         }
