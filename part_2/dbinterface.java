@@ -556,7 +556,7 @@ public class dbinterface{
     }
     public static void findRoutesQuery(String origin, String dest) {
         try {
-            String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ?";
+            String directQuery = "SELECT DISTINCT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ?";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
             findDirect.setString(2, dest);
@@ -598,7 +598,7 @@ public class dbinterface{
 
     public static void airlineRouteQuery(String origin, String dest, String airline) {
         try {
-            String directQuery = "SELECT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
+            String directQuery = "SELECT DISTINCT flight_number, departure_city, arrival_city,departure_time,arrival_time FROM Flight WHERE departure_city = ? AND arrival_city = ? AND airline_id = ?";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
             findDirect.setString(2, dest);
@@ -612,7 +612,7 @@ public class dbinterface{
 				}
 				System.out.println();
             }
-            String indirectQuery = "select * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND f1.airline_id = ?";
+            String indirectQuery = "select DISTINCT * from flight f1 JOIN flight f2 on f1.arrival_city = f2.departure_city AND f1.airline_id = f2.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.departure_city = ? AND f2.arrival_city = ? AND f1.airline_id = ?";
             PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
             findIndirect.setString(1, origin);
             findIndirect.setString(2, dest);
@@ -652,7 +652,7 @@ public class dbinterface{
             java.sql.Date date = new java.sql.Date(formatter.parse(ds).getTime());
             c.setTime(date);
 			//gets the count of reservations that fit the flight number
-			String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
+			String directQuery = "SELECT DISTINCT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
             PreparedStatement findDirect = connection.prepareStatement(directQuery);
             findDirect.setString(1, origin);
             findDirect.setString(2, dest);
@@ -661,17 +661,17 @@ public class dbinterface{
             ResultSetMetaData rsmd = rs.getMetaData();
             int cols = rsmd.getColumnCount();
             while (rs.next()) {
-                String schedule = rs.getString("weekly_schedule");
-                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-                if (!(schedule.charAt(dayOfWeek - 1) == '-')) {
+                // String schedule = rs.getString("weekly_schedule");
+                // int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                // if (!(schedule.charAt(dayOfWeek - 1) == '-')) {
                     for (int i = 1; i <= cols; i++) {
                         System.out.print(rs.getString(i) + " ");
                     }
                     System.out.println();
-                }
+                // }
 
             }
-            String indirectQuery = "SELECT * FROM (Flight f1 JOIN Plane p1 ON f1.plane_type = p1.plane_type) JOIN (Flight f2 JOIN Plane p2 ON f2.plane_type = p2.plane_type) ON f1.arrival_city = f2.departure_city WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.arrival_city = ? AND f2.departure_city = ? AND p1.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f1.flight_number FROM Flight f1 JOIN Reservation_details d ON f1.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))	AND p2.plane_capacity > (SELECT COUNT(*) FROM (	SELECT f2.flight_number FROM Flight f2 JOIN Reservation_details d ON f2.flight_number = d.flight_number	WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
+            String indirectQuery = "SELECT DISTINCT * FROM (Flight f1 JOIN Plane p1 ON f1.plane_type = p1.plane_type) JOIN (Flight f2 JOIN Plane p2 ON f2.plane_type = p2.plane_type) ON f1.arrival_city = f2.departure_city WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.arrival_city = ? AND f2.departure_city = ? AND p1.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f1.flight_number FROM Flight f1 JOIN Reservation_details d ON f1.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))	AND p2.plane_capacity > (SELECT COUNT(*) FROM (	SELECT f2.flight_number FROM Flight f2 JOIN Reservation_details d ON f2.flight_number = d.flight_number	WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
             PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
             findIndirect.setString(1, origin);
             findIndirect.setString(2, dest);
@@ -713,7 +713,7 @@ public class dbinterface{
 		java.sql.Date date = new java.sql.Date (formatter.parse(ds).getTime());
 		c.setTime(date);
 		//gets the count of reservations that fit the flight number
-		String directQuery = "SELECT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type AND f.airline_id = ? WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
+		String directQuery = "SELECT DISTINCT f.flight_number, f.departure_city, f.arrival_city, f.departure_time, f.arrival_time, f.weekly_schedule FROM Flight f JOIN Plane p ON f.plane_type = p.plane_type AND f.airline_id = ? WHERE f.departure_city = ? AND f.arrival_city = ? AND p.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f.flight_number FROM Flight f JOIN Reservation_details d ON f.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
 		PreparedStatement findDirect = connection.prepareStatement(directQuery);
 		findDirect.setString(1, airline);
 		findDirect.setString(2, origin);
@@ -723,17 +723,17 @@ public class dbinterface{
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int cols = rsmd.getColumnCount();
 		while (rs.next()) {
-			String schedule = rs.getString("weekly_schedule");
-			int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-			if (!(schedule.charAt(dayOfWeek - 1) == '-')) {
+			// String schedule = rs.getString("weekly_schedule");
+			// int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+			// if (!(schedule.charAt(dayOfWeek - 1) == '-')) {
 				for(int i = 1; i <= cols; i++){
 					System.out.print(rs.getString(i) + " ");
 				}
 				System.out.println();
-			}
+			// }
 
 		}
-		String indirectQuery = "SELECT * FROM (Flight f1 JOIN Plane p1 ON f1.plane_type = p1.plane_type) JOIN (Flight f2 JOIN Plane p2 ON f2.plane_type = p2.plane_type) ON f1.arrival_city = f2.departure_city AND f1.airline_id = ? AND f2.airline_id = f1.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.arrival_city = ? AND f2.departure_city = ? AND p1.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f1.flight_number FROM Flight f1 JOIN Reservation_details d ON f1.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))	AND p2.plane_capacity > (SELECT COUNT(*) FROM (	SELECT f2.flight_number FROM Flight f2 JOIN Reservation_details d ON f2.flight_number = d.flight_number	WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
+		String indirectQuery = "SELECT DISTINCT * FROM (Flight f1 JOIN Plane p1 ON f1.plane_type = p1.plane_type) JOIN (Flight f2 JOIN Plane p2 ON f2.plane_type = p2.plane_type) ON f1.arrival_city = f2.departure_city AND f1.airline_id = ? AND f2.airline_id = f1.airline_id WHERE TO_NUMBER(f1.arrival_time)+100 <= TO_NUMBER(f2.departure_time) AND f1.arrival_city = ? AND f2.departure_city = ? AND p1.plane_capacity > (SELECT COUNT(*) FROM ( SELECT f1.flight_number FROM Flight f1 JOIN Reservation_details d ON f1.flight_number = d.flight_number WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))	AND p2.plane_capacity > (SELECT COUNT(*) FROM (	SELECT f2.flight_number FROM Flight f2 JOIN Reservation_details d ON f2.flight_number = d.flight_number	WHERE d.flight_date = to_date(?, 'MM/DD/YYYY')))";
 		PreparedStatement findIndirect = connection.prepareStatement(indirectQuery);
 		findIndirect.setString(1, airline);
 		findIndirect.setString(2, origin);
