@@ -357,13 +357,13 @@ public class dbinterface{
 		}
 	}
 	
-    public static void insertUserQuery(String salutation, String fname, String lname, String cc, String expdate, String street, String city, String state, String pn, String email) {
-
+    public static int insertUserQuery(String salutation, String fname, String lname, String cc, String expdate, String street, String city, String state, String pn, String email) {
+        int n = -1;
         try {
             String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
             PreparedStatement putCust = connection.prepareStatement(insCust);
             Random rand = new Random();
-            int n = rand.nextInt(99999999) + 10000000;
+            n = rand.nextInt(99999999) + 10000000;
             String cid = Integer.toString(n);
             putCust.setString(1, cid);
             putCust.setString(2, salutation);
@@ -381,6 +381,7 @@ public class dbinterface{
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
+        return n;
     }
     public static boolean findUserQuery(String fname, String lname) {
         try {
@@ -779,7 +780,11 @@ public class dbinterface{
             int cols = rsmd.getColumnCount();
             if (!rs.next()) {
                 System.out.println("Sorry, that wasn't a valid reservation number.");
-            } else {
+            } else { 
+                for (int i = 1; i <= cols; i++) {
+                    System.out.print(rs.getString(i) + " ");
+                }
+                System.out.println();
                 while (rs.next()) {
                     for (int i = 1; i <= cols; i++) {
                         System.out.print(rs.getString(i) + " ");
@@ -819,30 +824,66 @@ public class dbinterface{
         String resnum = scan.next();
         buyTicketQuery(resnum);
     }
-    public static void reservationQuery(String flightnum, String date, Integer legnum) {
+
+    public static int addReservation(String cid, int cost, String ccNum, String startCity, String endCity, String date){
+
+        int newResNum = -1;
+        try{
+            String maxResNumQ = " SELECT max(reservation_number) as max_res from Reservation";
+            PreparedStatement maxResNumS = connection.prepareStatement(maxResNumQ);
+            
+            ResultSet maxResNumR = maxResNumS.executeQuery();
+            maxResNumR.next();
+            String maxResNum = maxResNumR.getString("max_res");
+            int maxResNumInt;
+            try{
+                maxResNumInt = Integer.valueOf(maxResNum);
+            } catch (Exception numEx){
+                maxResNumInt = 0;
+            }
+            newResNum = maxResNumInt+1;
+
+            String insertResQ = "INSERT INTO Reservation VALUES(?, ?, ?, ?, to_date(?, 'MM/DD/YYYY'), ?, ?, ?)";
+            PreparedStatement insertResS = connection.prepareStatement(insertResQ);
+            insertResS.setString(1,(new Integer(newResNum)).toString());
+            insertResS.setString(2, cid);
+            insertResS.setInt(3, cost);
+            insertResS.setString(4, ccNum);
+            insertResS.setString(5, date);
+            insertResS.setString(6, startCity);
+            insertResS.setString(7, endCity);
+            insertResS.setString(8, "N");
+            insertResS.executeQuery();
+        } catch (Exception asdf){
+            System.out.println("could not add reservation");
+            return -1;
+        }
+        return newResNum;
+    }
+
+
+    public static void reservationQuery(String new_rn, String flightnum, String date, Integer legnum) {
         try {
-            String resquery = "SELECT COUNT(reservation_number) FROM Reservation_details WHERE flight_number = ?";
+            String resquery = "SELECT COUNT(reservation_number) as total FROM Reservation_details WHERE flight_number = ?";
             PreparedStatement checkFlight = connection.prepareStatement(resquery);
             checkFlight.setString(1, flightnum);
             ResultSet rs = checkFlight.executeQuery();
+            rs.next();
             int seatsTaken = rs.getInt("total");
             String seatlimit = "SELECT plane_capacity FROM Plane NATURAL JOIN Flight WHERE Flight.flight_number = ?";
             PreparedStatement seatlimitQuery = connection.prepareStatement(seatlimit);
             seatlimitQuery.setString(1, flightnum);
             ResultSet sl = seatlimitQuery.executeQuery();
+            sl.next();
             int limit = sl.getInt("plane_capacity");
             if (seatsTaken < limit) {
-                String resnumQuery = "SELECT reservation_number FROM Reservation ORDER BY DESC LIMI 1";
-                PreparedStatement getResNum = connection.prepareStatement(resnumQuery);
-                ResultSet rn = getResNum.executeQuery();
-                int high_rn = Integer.valueOf(rn.getString("reservation_number"));
-                String new_rn = Integer.toString(high_rn + 1);
-                String addLegQuery = "INSERT INTO Reservation_details VALUES(?,?,?,?)";
+                String addLegQuery = "INSERT INTO Reservation_details VALUES(?,?,to_date(?, 'MM/DD/YYYY'),?)";
                 PreparedStatement addLeg = connection.prepareStatement(addLegQuery);
                 addLeg.setString(1, new_rn);
                 addLeg.setString(2, flightnum);
                 addLeg.setString(3, date);
                 addLeg.setInt(4, legnum);
+                addLeg.executeQuery();
             }
             else{
                 System.out.println("Sorry, there are no seats available for flight "+flightnum);
@@ -861,7 +902,8 @@ public class dbinterface{
             flightnum = scan.nextLine();
             System.out.print("Enter Flight Date: ");
             flightdate = scan.nextLine();
-            reservationQuery(flightnum, flightdate, numLegs);
+            
+            reservationQuery("1",flightnum, flightdate, numLegs);
             numLegs++;
         }
         
