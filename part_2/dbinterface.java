@@ -357,13 +357,13 @@ public class dbinterface{
 		}
 	}
 	
-    public static void insertUserQuery(String salutation, String fname, String lname, String cc, String expdate, String street, String city, String state, String pn, String email) {
-
+    public static int insertUserQuery(String salutation, String fname, String lname, String cc, String expdate, String street, String city, String state, String pn, String email) {
+        int n = -1;
         try {
             String insCust = "INSERT INTO Customer VALUES(?,?,?,?,?,?,?,?,?,?,?, NULL)";
             PreparedStatement putCust = connection.prepareStatement(insCust);
             Random rand = new Random();
-            int n = rand.nextInt(99999999) + 10000000;
+            n = rand.nextInt(99999999) + 10000000;
             String cid = Integer.toString(n);
             putCust.setString(1, cid);
             putCust.setString(2, salutation);
@@ -381,6 +381,7 @@ public class dbinterface{
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
+        return n;
     }
     public static boolean findUserQuery(String fname, String lname) {
         try {
@@ -779,7 +780,11 @@ public class dbinterface{
             int cols = rsmd.getColumnCount();
             if (!rs.next()) {
                 System.out.println("Sorry, that wasn't a valid reservation number.");
-            } else {
+            } else { 
+                for (int i = 1; i <= cols; i++) {
+                    System.out.print(rs.getString(i) + " ");
+                }
+                System.out.println();
                 while (rs.next()) {
                     for (int i = 1; i <= cols; i++) {
                         System.out.print(rs.getString(i) + " ");

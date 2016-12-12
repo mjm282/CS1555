@@ -15,6 +15,8 @@ public class Part3Driver{
 
     public static void main(String[] args){
 
+        int cid = 0;
+
         System.out.println("==================================================================================");
         System.out.println("                             starting tests                                       ");
         System.out.println("==================================================================================");
@@ -113,7 +115,7 @@ public class Part3Driver{
                 String email = fname + "@" + lname + ".com";
 
                 // ok, enough fun, let's add them back to the DB
-                dbinterface.insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
+                cid = dbinterface.insertUserQuery(salutation,fname,lname,cc,expdate,street,city,state,pn,email);
                 System.out.println("user " + i + " added");
 
             }
@@ -231,6 +233,12 @@ public class Part3Driver{
         System.out.println("\n***add reservation***");
         try{
             //TODO
+            
+            dbinterface.addReservation((new Integer(cid)).toString(), 0, "1", "2", "12", "12/14/16");
+            dbinterface.addReservation((new Integer(cid)).toString(), 0, "1", "2", "12", "12/14/16");
+            dbinterface.addReservation((new Integer(cid)).toString(), 0, "1", "2", "12", "12/14/16");
+            dbinterface.addReservation((new Integer(cid)).toString(), 0, "1", "2", "12", "12/14/16");
+            dbinterface.addReservation((new Integer(cid)).toString(), 0, "1", "2", "12", "12/14/16");
             dbinterface.reservationQuery("1", "2", "12/14/16", 1);
             dbinterface.reservationQuery("2", "2", "12/14/16", 1);
             dbinterface.reservationQuery("3", "2", "12/14/16", 1);
