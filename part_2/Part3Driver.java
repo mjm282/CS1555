@@ -162,8 +162,8 @@ public class Part3Driver{
         // and print the expected result too
         System.out.println("\n***find route***");
         try{
-            for(int i=1; i<=5; i++){
-                for(int j=25; j>=20; j--){
+            for(int i=1; i<=4; i++){
+                for(int j=25; j>=21; j--){
                     if(i != j){
                         System.out.println("finding from " + i + " to " + j);
                         dbinterface.findRoutesQuery((new Integer(i)).toString(), (new Integer(j)).toString());
@@ -178,7 +178,7 @@ public class Part3Driver{
         // Let's call this one twice for each airline
         System.out.println("\n***find routes airline***");
         try{
-            for(int i=1; i<=4; i++){
+            for(int i=1; i<=3; i++){
                 for(int j=25; j>=23; j--){
                     if( i != j){
                         System.out.println("finding from " + i + " to " + j);
